@@ -1,0 +1,56 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+<h1>No Orders Exist...!</h1>
+
+<div class="my-order">
+    <h1>My Orders</h1>
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Order Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#1001</td>
+                <td>Pizza</td>
+                <td>2</td>
+                <td>$20</td>
+                <td>2025-01-14</td>
+                <td>Delivered</td>
+            </tr>
+            <tr>
+                <td>#1002</td>
+                <td>Burger</td>
+                <td>1</td>
+                <td>$8</td>
+                <td>2025-01-13</td>
+                <td>Pending</td>
+            </tr>
+            <tr>
+                <td>#1003</td>
+                <td>Fries</td>
+                <td>3</td>
+                <td>$12</td>
+                <td>2025-01-12</td>
+                <td>Cancelled</td>
+            </tr>
+            <tr>
+                <td>#1003</td>
+                <td>Fries</td>
+                <td>3</td>
+                <td>$12</td>
+                <td>2025-01-12</td>
+                <td>Cancelled</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
