@@ -4,7 +4,9 @@
 
 {% block content %}
 <div class="border">
-  <h2 class="text-xl font-semibold">Upper Dashboard</h2>
+    <h2 class="text-xl font-semibold">Upper Dashboard</h2>
+   
+
   
   <!-- Upper Dashboard Cards -->
   <div class="border border-success d-flex flex-wrap p-2 m-2 justify-content-evenly gap-1"> 
@@ -69,48 +71,3 @@
 </script>
 
 {% endblock %}
-
-
-{% comment %} {% extends 'base1/base.html' %}
-{% load static %}
-{% block title %}Dashboard - FOX FOOD DELIVERY{% endblock %}
-
-{% block content %}
-
-<div class="border">
-  <h2 class="text-xl font-semibold">Upper Dashboard</h2>
-  
-  <!-- Upper Dashboard Cards -->
-  <div class="border border-success d-flex flex-wrap p-2 m-2 justify-content-evenly gap-1"> 
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('orders')">
-      <h2>Orders</h2>
-    </div>
-    
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('cancelled-orders')">
-      <h2>Cancelled Orders</h2>
-    </div>
-    
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('pending-orders')">
-      <h2>Pending Orders</h2>
-    </div>
-  </div>
-  
-  <!-- Lower Dashboard -->
-  <div>
-    <h2 class="text-xl font-semibold">Lower Dashboard</h2>
-    <div id="lower-dashboard" class="border p-3 mt-2">
-      <p>Select an option from the upper dashboard to display details here.</p>
-    </div>
-  </div>    
-</div>
-
-<!-- Include the External JavaScript File -->
-<script src="{% static 'js/dashboard.js' %}"></script>
-
-{% endblock %} {% endcomment %}
