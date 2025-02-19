@@ -1,0 +1,77 @@
+{% extends 'base1/base.html' %}
+
+{% block title %}Add Items - ZEAL CANTEEN{% endblock %}
+
+{% block content %}
+  <div class="container py-5 border-2 border-dark">
+    <b><h1 class="form-title text-center mb-5">Add Food Item</h1></b>
+    
+    <form action="{% url 'additems' %}" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
+      {% csrf_token %}
+      {% if messages %}
+        <div id="message-box">
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
+        </div>
+
+        <script>
+          setTimeout(function() {
+            document.getElementById("message-box").style.display = "none";
+          }, 3000); // Hide message after 3 seconds
+        </script>
+      {% endif %}
+
+      <div class="form-group mb-4">
+        <label for="foodName" class="form-label">Name of Food</label>
+        <input type="text" class="form-control" id="foodName" name="foodName" placeholder="Enter food name" required>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter food description" required></textarea>
+      </div>
+
+      <div class="form-group mb-4">
+        <label class="form-label">Type</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="veg" name="FoodType" value="Veg" required>
+          <label class="form-check-label" for="veg">Veg</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="nonVeg" name="FoodType" value="Non-Veg">
+          <label class="form-check-label" for="nonVeg">Non-Veg</label>
+        </div>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="category" class="form-label">Category</label>
+        <select class="form-control" id="category" name="Category" required>
+          <option value="" disabled selected>Select Category</option>
+          <option value="Breakfast">Breakfast</option>
+          <option value="Drinks">Drinks</option>
+          <option value="South Indian">South Indian</option>
+          <option value="Regular">Regular</option>
+        </select>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" class="form-control" id="price" name="Price" placeholder="Enter price" required>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="image" class="form-label">Food Image</label>
+        <input type="file" class="form-control-file" id="image" name="image" required>
+      </div>
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Add Food Item</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-footer text-center mt-5">
+    <p>Powered by Zeal Canteen System &copy; 2025</p>
+  </div>
+{% endblock %}

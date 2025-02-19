@@ -15,20 +15,38 @@
     <div class="flex">
         <aside class="w-64 bg-zinc-800 text-white h-screen sticky top-0">
             <div class="p-4">
-                <h1 class="text-2xl font-bold">ZEAL COLLEGE</h1>
+                <h1 class="text-2xl font-bold">
+                    <div class="container mt-5">
+                        <h2>Welcome, {{ vendor_name }}</h2>
+                        
+                    </div>
+                </h1>
             </div>
             <nav class="mt-4">
                 <ul>
                     <li class="py-2 px-4 hover:bg-zinc-700">
-                        <a href="{% url 'items' %}">Dashboard</a>
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
                     </li>
                     <li class="py-2 px-4 hover:bg-zinc-700">
                         <a href="{% url 'order' %}">Order</a>
                     </li>
-                    <li class="py-2 px-4 hover:bg-zinc-700">
-                        <a href="{% url 'items' %}">Items</a>
-                    </li>
+<!-- Parent List Item (Dropdown) -->
+<li class="relative group py-2 px-4 hover:bg-zinc-700">
+    <h1>Items</h1>
+
+    <!-- Dropdown Menu -->
+    <ul class="absolute left-20 hidden group-hover:block bg-zinc-800 w-40 shadow-md">
+        <li class="py-2 px-4 hover:bg-zinc-700">
+            <a href="{% url 'additems' %}">Add Items</a>
+        </li>
+        <li class="py-2 px-4 hover:bg-zinc-700">
+            <a href="{% url 'manage_items' %}">Manage Items</a>
+        </li>
+    </ul>
+</li>
+
                     <li class="py-2 px-4 hover:bg-zinc-700"><a href="{% url 'account' %}">My Account</a></li>
+                    <li class="py-2 px-4 hover:bg-zinc-700"><a href="{% url 'logout' %}">Logout</a></li>
                 </ul>
             </nav>
         </aside>
