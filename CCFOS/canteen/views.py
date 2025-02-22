@@ -1,8 +1,11 @@
 from django.shortcuts import render
-
+from vendor.models import FoodItem , CanteenVendor
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    food_items = FoodItem.objects.all()
+    print(food_items)
+    return render(request, 'home.html', {'food_items': food_items})
+
 
 def MyCart(request):
     return render(request, 'mycart.html')
