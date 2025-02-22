@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-{% load static%}
+{% comment %} {% load static%}
 
 {%block content %}
 <h1>Cart is empty...!</h1>
@@ -30,20 +30,20 @@
 <div class="cart-item">
   <img src="{% static "images/dum-biryani.jpg" %}" class="card-img-top item-img" alt="...">
   <div class="item-details">
-      <h3>Chole Bhature</h3>
-      <p>2 Bhature With Chole And Salad</p>
-      <div class="item-info">
-          <div class="price">Price: <span>40</span></div>
-          <div class="quantity">
-              <label for="quantity">Quantity</label>
-              <div class="input-container">
-                <input type="number" id="quantity" value="1" min="1" r>
-              </div>
-            
-          </div>
-          <div class="amount">Amount: <span>200</span></div>
+    <h3>Chole Bhature</h3>
+    <p>2 Bhature With Chole And Salad</p>
+    <div class="item-info">
+      <div class="price">Price: ₹<span class="price-value">40</span></div>
+      <div class="quantity">
+        <label for="quantity">Quantity</label>
+        <div class="input-container">
+          <input type="number" id="quantity" value="1" min="1" class="quantity-input">
+        </div>
       </div>
+      <div class="amount">Amount: ₹<span class="amount-value">40</span></div>
+    </div>
   </div>
+  
   <button class="delete-item"><i class="fa-solid fa-trash"></i></button>
 </div>
 
@@ -105,4 +105,166 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const quantityInput = document.querySelector('#quantity');
+    const priceElement = document.querySelector('.price-value');
+    const amountElement = document.querySelector('.amount-value');
+    
+    // Function to update the amount based on quantity
+    function updateAmount() {
+      const price = parseInt(priceElement.textContent.replace('₹', ''));  // Get price value
+      const quantity = parseInt(quantityInput.value);  // Get quantity value
+      const amount = price * quantity;  // Calculate total amount
+      amountElement.textContent = amount;  // Update the amount in the UI
+    }
+
+    // Update the amount on quantity change
+    quantityInput.addEventListener('input', updateAmount);
+  });
+</script>
+
+
+{% endblock content %} {% endcomment %}
+
+
+ 
+{% load static %}
+
+{% block content %}
+<h1>Cart is empty...!</h1>
+
+<div class="mycart-page">
+  <div class="left-side">
+    <div class="left-side-cart">
+      <!-- Cart Item 1 -->
+      <div class="cart-item">
+        <img src="{% static "images/dosa.jpg" %}" class="card-img-top item-img" alt="...">
+        <div class="item-details">
+          <h3><b>Chole Bhature</b></h3>
+          <p>2 Bhature With Chole And Salad</p>
+          <div class="item-info">
+            <div class="price"><b>Price:</b> ₹<span class="price-value">40</span></div>
+            <div class="quantity">
+              <label for="quantity1">Quantity</label>
+              <div class="input-container">
+                <input type="number" id="quantity1" value="1" min="1" class="quantity-input">
+              </div>
+            </div>
+            <div class="amount"><b>Amount:</b> ₹<span class="amount-value">40</span></div>
+          </div>
+        </div>
+        <button class="delete-item"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+
+    <div class="left-side-cart">
+      <!-- Cart Item 2 -->
+      <div class="cart-item">
+        <img src="{% static "images/dum-biryani.jpg" %}" class="card-img-top item-img" alt="...">
+        <div class="item-details">
+          <h3><b>Chole Bhature</b></h3>
+          <p>2 Bhature With Chole And Salad</p>
+          <div class="item-info">
+            <div class="price"><b>Price:</b> ₹<span class="price-value">40</span></div>
+            <div class="quantity">
+              <label for="quantity2">Quantity</label>
+              <div class="input-container">
+                <input type="number" id="quantity2" value="1" min="1" class="quantity-input">
+              </div>
+            </div>
+            <div class="amount"><b>Amount:</b> ₹<span class="amount-value">40</span></div>
+          </div>
+        </div>
+        <button class="delete-item"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+
+    <!-- Cart Item 3 -->
+    <div class="left-side-cart">
+      <div class="cart-item">
+        <img src="{% static "images/egg puff.jpg" %}" class="card-img-top item-img" alt="...">
+        <div class="item-details">
+          <h3><b>Chole Bhature</b></h3>
+          <p>2 Bhature With Chole And Salad</p>
+          <div class="item-info">
+            <div class="price"><b>Price:</b> ₹<span class="price-value">40</span></div>
+            <div class="quantity">
+              <label for="quantity3">Quantity</label>
+              <div class="input-container">
+                <input type="number" id="quantity3" value="1" min="1" class="quantity-input">
+              </div>
+            </div>
+            <div class="amount"><b>Amount:</b> ₹<span class="amount-value">40</span></div>
+          </div>
+        </div>
+        <button class="delete-item"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+
+    <!-- Cart Item 4 -->
+    <div class="left-side-cart">
+      <div class="cart-item">
+        <img src="{% static "images/veg puff.jpg" %}" class="card-img-top item-img" alt="...">
+        <div class="item-details">
+          <h3><b>Chole Bhature</b></h3>
+          <p>2 Bhature With Chole And Salad</p>
+          <div class="item-info">
+            <div class="price"><b>Price:</b> ₹<span class="price-value">40</span></div>
+            <div class="quantity">
+              <label for="quantity4">Quantity</label>
+              <div class="input-container">
+                <input type="number" id="quantity4" value="1" min="1" class="quantity-input">
+              </div>
+            </div>
+            <div class="amount"><b>Amount:</b> ₹<span class="amount-value">40</span></div>
+          </div>
+        </div>
+        <button class="delete-item"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right-side content -->
+  <div class="right-side">
+    <div class="cart-categories-items">
+      <div class="card" style="width: 18rem;">
+        <img src="{% static "images/veg puff.jpg" %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p><b>₹0</b></p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Select each cart item using unique IDs
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    
+    // Loop through each quantity input
+    quantityInputs.forEach(function(input) {
+      const cartItem = input.closest('.cart-item');
+      const priceElement = cartItem.querySelector('.price-value');
+      const amountElement = cartItem.querySelector('.amount-value');
+
+      // Function to update the amount for each item
+      function updateAmount() {
+        const price = parseInt(priceElement.textContent.replace('₹', ''));
+        const quantity = parseInt(input.value);
+        const amount = price * quantity;
+        amountElement.textContent = amount;
+      }
+
+      // Add event listener to update amount when quantity changes
+      input.addEventListener('input', updateAmount);
+    });
+  });
+</script>
+
 {% endblock content %}

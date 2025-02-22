@@ -2,13 +2,294 @@
 {% load static %}
 {% block title %}Home{% endblock title %}
 {% block content %}
+
 <!-- Main Content -->
- 
-<div class="container d-flex flex-column align-items-center justify-content-center text-center my-5 flex-grow-1 ">
-  <h1>Welcome to ZEAL Canteen</h1>
-  <p class="lead">Order your favorite meals from the best restaurants.</p>
-  <a href="#food-section" class="btn btn-primary btn-lg" id="btn1">Order Now</a>
+<div class="main-content position-relative w-100" style="background: url('{% static "images/zeal.jpg" %}') center/cover no-repeat; min-height: 100vh;">
+  <!-- Transparent Overlay -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.5);"></div>
+
+  <!-- Content (Above the Overlay) -->
+  <div class="container d-flex flex-column align-items-center justify-content-center text-center position-relative text-white my-5 flex-grow-1">
+      <h1 class="title">Welcome to ZEAL Canteen</h1>
+      <p class="lead" style="color:rgb(225, 234, 241);">Order your favorite meals from the best restaurants.</p>
+      <a href="#food-section" class="btn btn-primary btn-lg" id="btn1">Order Now</a>
+  </div>
 </div>
+
+<!-- Categories Section -->
+<div class="categories" id="food-section">
+  <div class="categories-food">
+    <div class="itext">
+      <a href="#breakfast-categories">
+        <img src="{% static 'images/breakfast.png' %}" class="icon icon-text">
+      </a>
+      <p>Breakfast</p>
+    </div>
+    <div class="itext">
+      <a href="#lunch-categories">
+        <img src="{% static 'images/veg.png' %}" class="icon icon-text">
+      </a>
+      <p>Lunch</p>
+    </div>
+    <div class="itext">
+      <a href="#Snacks-categories">
+        <img src="{% static 'images/veg.png' %}" class="icon icon-text">
+      </a>
+      <p>Snacks</p>
+    </div>
+    <div class="itext">
+      <a href="#dinner-categories">
+        <img src="{% static 'images/rice.png' %}" class="icon icon-text">
+      </a>
+      <p>Dinner</p>
+    </div>
+    <div class="itext">
+      <a href="#drinks-categories">
+        <img src="{% static 'images/beer.png' %}" class="icon icon-text">
+      </a>
+      <p>Drinks</p>
+    </div>
+  </div>
+</div>
+
+<!-- Display Food Items by Category -->
+<div class="items-categories" id="breakfast-categories">
+  <h1>Breakfast Items</h1>
+  <p>The Traditional Andhra Taste</p>
+  <div class="cart-categories-items">
+    {% for food in food_items %}
+      {% if food.category == 'Breakfast' %}
+        <div class="card" style="width: 18rem;">
+          <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ food.food_name }}</h5>
+            <p class="card-text">{{ food.description }}</p>
+            <p><b>₹{{ food.price }}</b></p>
+            <p class="fs-6 ">(By Reastuarant :{{ food.vendor }})</p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="items-categories" id="Snacks-categories">
+  <h1>Snacks Items</h1>
+  
+  <div class="cart-categories-items">
+    {% for food in food_items %}
+      {% if food.category == 'Snacks' %}
+        <div class="card" style="width: 18rem;">
+          <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ food.food_name }}</h5>
+            <p class="card-text">{{ food.description }}</p>
+            <p><b>₹{{ food.price }}</b></p>
+            <p>(by reastuarant :{{ food.vendor }})</p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+
+<div class="items-categories" id="lunch-categories">
+  <h1>Lunch Items</h1>
+  <p>The Traditional Andhra Taste</p>
+  <div class="cart-categories-items">
+    {% for food in food_items %}
+      {% if food.category == 'Lunch' %}
+        <div class="card" style="width: 18rem;">
+          <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ food.food_name }}</h5>
+            <p class="card-text">{{ food.description }}</p>
+            <p><b>₹{{ food.price }}</b></p>
+            <p>(by reastuarant :{{ food.vendor }})</p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="items-categories" id="dinner-categories">
+  <h1>Dinner Items</h1>
+  <p>The Traditional Andhra Taste</p>
+  <div class="cart-categories-items">
+    {% for food in food_items %}
+      {% if food.category == 'Dinner' %}
+        <div class="card" style="width: 18rem;">
+          <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ food.food_name }}</h5>
+            <p class="card-text">{{ food.description }}</p>
+            <p><b>₹{{ food.price }}</b></p>
+            <p>(by reastuarant :{{ food.vendor }})</p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<div class="items-categories" id="drinks-categories">
+  <h1>Drinks</h1>
+  <p>The Traditional Andhra Taste</p>
+  <div class="cart-categories-items">
+    {% for food in food_items %}
+      {% if food.category == 'Drinks' %}
+        <div class="card" style="width: 18rem;">
+          <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ food.food_name }}</h5>
+            <p class="card-text">{{ food.description }}</p>
+            <p><b>₹{{ food.price }}</b></p>
+            <p>(by reastuarant :{{ food.vendor }})</p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+{% comment %} {% extends "base/base.html" %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+
+  
+<!-- Main Content -->
+<div class="main-content position-relative w-100" style="background: url('{% static "images/zeal.jpg" %}') center/cover no-repeat; min-height: 100vh;">
+  <!-- Transparent Overlay -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.5);"></div>
+
+  <!-- Content (Above the Overlay) -->
+  <div class="container d-flex flex-column align-items-center justify-content-center text-center position-relative text-white my-5 flex-grow-1">
+      <h1 class="title">Welcome to ZEAL Canteen</h1>
+      <p class="lead" style="color:rgb(225, 234, 241);">Order your favorite meals from the best restaurants.</p>
+      <a href="#food-section" class="btn btn-primary btn-lg" id="btn1">Order Now</a>
+  </div>
+</div>
+
+{% for food in food_items %}
+    {% if food.category == 'Breakfast' %}
+        <h1>{{ food.food_name }}</h1>
+        <p>{{ food.price }}</p>
+        <p>{{ food.category }}</p>
+        <p>{{ food.description }}</p>
+        <img src="{{ food.image.url }}" alt="{{ food.food_name }}">
+        <br>
+    {% endif %}
+{% endfor %}
+
+<!-- Categories Section -->
+<div class="categories" id="food-section">
+  <div class="categories-food">
+    <div class="itext">
+     <a href = "#snack-categories"> <img src="{% static "images/breakfast.png" %}" class="icon icon-text">
+     </a><p> </p>
+    </div>
+    <div class="itext">
+      <img src="{% static "images/veg.png" %}" class="icon icon-text">
+      <p>veg</p>
+    </div>
+    <div class="itext">
+      <img src="{% static "images/rice.png" %}" class="icon icon-text">
+      <p>Rice</p>
+    </div>
+    <div class="itext">
+      <img src="{% static "images/biryani.png" %}" class="icon icon-text">
+      <p>Non Veg</p>
+    </div>
+    <div class="itext">
+      <img src="{% static "images/ice-cream.png" %}" class="icon icon-text">
+      <p>Ice Cream</p>
+    </div>
+    <div class="itext">
+      <img src="{% static "images/beer.png" %}" class="icon icon-text">
+      <p>Drinks</p>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Section -->
+<div class="cart-section">
+  <div class="items-categories">
+    <h1>Breakfast Items</h1>
+    <p>The Traditional Andhra Taste</p>
+    <div class="cart-categories-items">
+      {% for food in food_items %}
+        {% if food.category == 'Breakfast' %}
+          <div class="card" style="width: 18rem;">
+            <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.food_name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ food.food_name }}</h5>
+              <p class="card-text">{{ food.description }}</p>
+              <p><b>₹{{ food.price }}</b></p>
+              <a href="#" class="btn btn-primary">Add to Cart</a>
+            </div>
+          </div>
+        {% endif %}
+      
+  <div class="items-categories">
+    <h1>Lunch Items</h1>
+    <p>The Traditional Andhra Taste</p>
+    {% if food.category == 'Lunch' %}    
+    <div class="cart-categories-items">
+      <div class="card" style="width: 18rem;">
+        <img src="{% static "images/fry-biryani.jpg" %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ food.food_name }}</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p><b>₹0</b></p>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>
+      </div>
+    {% endif %}
+  {%endfor%}
+  
+  <div class="items-categories"  id="snack-categories">
+    <h1>Snack Items</h1>
+    <p>The Traditional Andhra Taste</p>
+    <div class="cart-categories-items">
+      <div class="card" style="width: 18rem;">
+        <img src="{% static "images/veg-manchurian.jpg" %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Veg Manchurian</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p><b>₹0</b></p>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>
+      </div>
+      
+  <div class="items-categories">
+    <h1>Coolers</h1>
+    <p>The Traditional Andhra Taste</p>
+    <div class="cart-categories-items">
+      <div class="card" style="width: 18rem;">
+        <img src="{% static "images/cola.jpg" %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Coca Cola</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <p><b>₹0</b></p>
+          <a href="#" class="btn btn-primary">Add to Cart</a>
+        </div>
+      </div>
+</div>
+</div>
+</div>   
+{% endblock content %} {% endcomment %}
 
 {% comment %} <div class="body-section">
   <div class="body-section-content">
@@ -260,121 +541,3 @@
       </div>
     </div>
   </div> {% endcomment %}
-
-  <div class="categories" id="food-section">
-    <div class="categories-food">
-      <div class="itext"><img src="{% static "images/breakfast.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-      <div class="itext"><img src="{% static "images/biryani.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-      <div class="itext"><img src="{% static "images/rice.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-      <div class="itext"><img src="{% static "images/fried-chicken.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-      <div class="itext"><img src="{% static "images/ice-cream.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-      <div class="itext"><img src="{% static "images/beer.png" %}" class="icon icon-text">
-        <p>detial </p>
-      </div>
-    </div>
-  </div>
-
-  <div class="cart-section">
-    <div class="items-categories">
-      <h1>Breakfast-items</h1>
-      <p>The Traditional Andhra Taste</p>
-      <div class=" cart-categories-items">
-        <div class="card" style="width: 18rem;">
-          <img src="{% static "images/dosa.jpg" %}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title"><b>Card title</b></h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <p><b>₹0</b></p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="img not found">
-          <div class="card-body">
-            <h5 class="card-title"><b>Card title</b></h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-        <div class="card" style="width: 18rem;">
-          <img src="..." class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="items-categories">
-      <h1>Breakfast-items</h1>
-      <p>The Traditional Andhra Taste</p>
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-    <div class="items-categories">
-      <h1>Breakfast-items</h1>
-      <p>The Traditional Andhra Taste</p>
-      <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% comment %} {% endcomment %}
-  
-
-  {% endblock content %}
