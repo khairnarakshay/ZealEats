@@ -110,6 +110,8 @@ def home_view(request):
     return render(request, 'registration.html')
 
 def additems(request):
+
+    
     if request.method == "POST":
 
          # Get vendor details from session (assuming they are stored after login)
