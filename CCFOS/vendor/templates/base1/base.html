@@ -16,6 +16,19 @@
         <aside class="w-64 bg-zinc-800 text-white h-screen sticky top-0">
             <div class="p-4">
                 <h1 class="text-2xl font-bold">
+                    {% if messages %}
+                    <div id="message-box">
+                      {% for message in messages %}
+                        <div class="alert alert-success">{{ message }}</div>
+                      {% endfor %}
+                    </div>
+            
+                    <script>
+                      setTimeout(function() {
+                        document.getElementById("message-box").style.display = "none";
+                      }, 3000); // Hide message after 3 seconds
+                    </script>
+                  {% endif %}
                     <div class="container mt-5">
                         <h2>Welcome, {{ vendor_name }}</h2>
                         
