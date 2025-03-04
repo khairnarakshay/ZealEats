@@ -1,0 +1,168 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+{% load static %}
+
+<div class="main-content position-relative w-100" style="background: url('{% static "images/zeal.jpg" %}') center/cover no-repeat; min-height: 100vh;">
+    <!-- Transparent Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.1);"></div>
+  
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row w-100 mt-5">
+        <!-- Welcome Section -->
+        <div class="col-md-4 d-flex flex-column justify-content-center p-5 bg-dark card shadow-lg">
+            <h1 class="text-primary">Welcome to ZEAL College Canteen!</h1>
+            <p class="fs-5">Experience hassle-free food ordering. Log in or register to get started!</p>
+        </div>
+
+        <!-- Registration Form Section -->
+        <div class="col-md-8 d-flex justify-content-center align-items-center">
+            <div class="card shadow-lg p-4 w-100">
+                <h3 class="text-center mb-4 bg-dark text-white p-2">Registration</h3>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'registration' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="full_name" placeholder="Enter Full Name"
+                               value="{{ request.POST.full_name|default:'' }}" required>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="text" class="form-control" name="mobile" placeholder="Enter Mobile Number"
+                               value="{{ request.POST.mobile|default:'' }}" required>
+                    </div>
+                
+                    <div class="">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email address"
+                                   value="{{ request.POST.email|default:'' }}" required>
+                            <button type="button" class="btn btn-secondary" id="sendOtpBtn">Send OTP</button>
+                        </div>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Enter OTP</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP"
+                                   required>
+                            <button type="button" class="btn btn-secondary" id="validateOtpBtn">Verify OTP</button>
+                        </div>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+                
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="registerBtn">Register</button>
+                    </div>
+                </form>
+                
+
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="{% url 'customer_login' %}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript to Send Email OTP -->
+<script>
+    document.getElementById("sendOtpBtn").addEventListener("click", function() {
+        var email = document.getElementById("email").value;
+    
+        // Check if the email is already registered
+        fetch("{% url 'check_email_exists' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "email=" + encodeURIComponent(email)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "exists") {
+                alert("Email already registered! Please use a different email.");
+            } else if (data.status === "available") {
+                alert("Email is available! Sending OTP...");
+    
+                // Send OTP request to backend
+                fetch("{% url 'send_otp' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "email=" + encodeURIComponent(email)
+                })
+                .then(response => response.json())
+                .then(otpData => {
+                    if (otpData.status === "sent") {
+                        alert("OTP sent successfully!");
+    
+                        // After OTP is sent, wait for OTP input and validate
+                        document.getElementById("validateOtpBtn").addEventListener("click", function() {
+                            var otp = document.getElementById("otp").value;
+    
+                            // Validate OTP
+                            fetch("{% url 'validate_otp' %}", {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": "{{ csrf_token }}",
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: "email=" + encodeURIComponent(email) + "&otp=" + encodeURIComponent(otp)
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === "success") {
+                                    alert("OTP verified successfully! You can proceed.");
+                                } else {
+                                    alert(data.message); // Show the error message (e.g., "Invalid OTP")
+                                }
+                            })
+                            .catch(error => {
+                                alert("Error verifying OTP. Try again.");
+                                console.error(error);
+                            });
+                        });
+    
+                    } else {
+                        alert("Failed to send OTP. Try again.");
+                    }
+                });
+            } else {
+                alert("Error checking email. Try again.");
+            }
+        });
+    });
+    </script>
+    
+
+{% endblock %}

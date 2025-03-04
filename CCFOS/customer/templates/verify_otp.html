@@ -1,0 +1,25 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+<div class="container">
+    <h3 class="text-center mb-4">Verify OTP</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Enter OTP</label>
+            <input type="text" class="form-control" name="otp" placeholder="Enter OTP" required>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Verify OTP</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <p>Didn't receive the OTP? <a href="{% url 'send_otp' %}">Resend OTP</a></p>
+    </div>
+</div>
+
+{% endblock %}
