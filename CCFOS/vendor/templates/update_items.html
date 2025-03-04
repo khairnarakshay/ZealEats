@@ -1,8 +1,98 @@
 
-{% extends 'base1/base.html'%}
+
+
+{% extends 'base1/base.html' %}
+
+{% block title %}Add Items - ZEAL CANTEEN{% endblock %}
 
 {% block content %}
+  <div class="container py-5 border-2 border-dark">
+    <b><h1 class="form-title text-center mb-5">Add Food Item</h1></b>
+    
+    <form action="{% url 'update-item' food_item.id%}" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
+      {% csrf_token %}
+      {% if messages %}
+        <div id="message-box">
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
+        </div>
 
-<h1>Upate Items</h1>
+        <script>
+          setTimeout(function() {
+            document.getElementById("message-box").style.display = "none";
+          }, 3000); // Hide message after 3 seconds
+        </script>
+      {% endif %}
 
-{% endblock%}
+      <div class="form-group mb-4">
+        <label for="foodName" class="form-label">Name of Food</label>
+        <input type="text" class="form-control" id="foodName" name="foodName" placeholder="Enter food name" required value="{{ food_item.food_name }}">
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter food description" required > {{ food_item.description }}</textarea>
+      </div>
+
+      <div class="form-group mb-4">
+        <label class="form-label">Type</label>
+<div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" id="veg" name="FoodType" value="Veg" 
+        {% if food_item.food_type == "Veg" %}checked{% endif %} required>
+    <label class="form-check-label" for="veg">Veg</label>
+</div>
+<div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" id="nonVeg" name="FoodType" value="Non-Veg"
+        {% if food_item.food_type == "Non-Veg" %}checked{% endif %}>
+    <label class="form-check-label" for="nonVeg">Non-Veg</label>
+</div>
+
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="category" class="form-label">Category</label>
+       
+        <select class="form-control" id="category" name="Category" required>
+          <option value="" disabled selected>Select Category</option>
+          <option value = "{{ food_item.category }}" selected>{{ food_item.category }}</option>
+          <option value="Breakfast"> Breakfast</option>
+          <option value="Lunch"> Lunch</option>
+          <option value="Dinner"> Dinner</option>
+          <option value="Snacks"> Snacks</option>
+          <option value="Desserts"> Desserts</option>
+                    
+       
+         
+        </select>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="price" class="form-label">Price</label>
+        <input type="number" class="form-control" id="price" name="Price" placeholder="Enter price" required value="{{ food_item.price }}">
+      </div>
+      <div class="form-group mb-4">
+        <label for="image" class="form-label">Food Image</label>
+        
+        <!-- Display Current Image -->
+        {% if food_item.image %}
+            <img src="{{ food_item.image.url }}" alt="Current Food Image" class="w-24 h-24 rounded-md mb-2">
+        {% endif %}
+    
+        <!-- File Upload Field -->
+        <input type="file" class="form-control-file" id="image" name="image">
+    </div>
+    
+     
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Add Food Item</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="form-footer text-center mt-5">
+    <p>Powered by Zeal Canteen System &copy; 2025</p>
+  </div>
+{% endblock %}
+
