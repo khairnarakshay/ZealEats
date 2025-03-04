@@ -12,7 +12,8 @@ urlpatterns = [
     path('order/', views.order, name='order'),
     path('additems/', views.additems, name='additems'),
     path('manage-items/', views.manage_items, name='manage_items'),
-    path("update-items/<int:id>",views.update_items, name="update-item"),
+    # path("update-items/<int:id>",views.update_items, name="update-item"),
+    path('update-item/<int:id>/', views.update_items, name='update-item'),
     
     path("delete-item/<int:item_id>/", views.delete_item, name="delete-item"),
     path('account/', views.account, name='account'),
