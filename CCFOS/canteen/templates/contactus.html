@@ -1,33 +1,181 @@
 {% extends "base/base.html" %}
+{% load static%}
 {% block content %}
-
-<div class="contact-page">
-    <div class="content-wrapper">
-        <h1>Contact Us</h1>
-        <p>We'd love to hear from you! Reach out to us for any queries or assistance.</p>
+<style>
+    
+    .contact-section {
+    
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 5rem 0 3rem;
+      
+        background: url('{% static "images/zeal.jpg" %}') center/cover no-repeat;
+        height: 100vh;
+        position: center;
+        display: flex;  
+        justify-content: center;
+        align-items: center;
         
-        <div class="contact-details">
-            <div class="info">
-                <i class="fas fa-envelope"></i>
-                <p>Email: support@example.com</p>
-            </div>
-            <div class="info">
-                <i class="fas fa-phone-alt"></i>
-                <p>Phone: +123 456 7890</p>
-            </div>
-            <div class="info">
-                <i class="fas fa-map-marker-alt"></i>
-                <p>Address: 123 Main Street, Your City</p>
-            </div>
-        </div>
+        
+    
+        
+    }
+    .contact-card {
+        
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+        background: rgba(255, 255, 255, 0.0);
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 15px rgba(13, 110, 253, 0.25);
+        border-color: #86b7fe;
+    }
+    .contact-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(45deg, #4e73df, #224abe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .social-icon {
+        transition: all 0.3s ease;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .btn-send {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-send:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.4);
+    }
+    @media (max-width: 768px) {
+        .contact-info-col {
+            margin-bottom: 2rem;
+        }
+        .contact-section {
+            padding: 3rem 0 2rem;
+        }
+    }
+</style>
 
-        <div class="social-media">
-            <h3>Follow Us</h3>
-            <div class="icons">
-                <a href="#" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
-                <a href="#" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
-                <a href="#" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+<div class="contact-section d-flex">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <!-- Title Section -->
+                <div class="text-center mb-5">
+                    <h1 class="display-4 mb-3 fw-bold text-primary">Get in Touch</h1>
+                    <p class="lead text-muted">Have questions? We're here to help!</p>
+                </div>
+
+                <div class="row g-5">
+                    <!-- Contact Info -->
+                    <div class="col-lg-4">
+                        <div class="contact-card p-4 h-100">
+                            <div class="contact-info">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <h4 class="text-center mb-3">Our Office</h4>
+                                <p class="text-center text-muted">D-Building Zeal College of Enginnearing <br> Narhe Pune 12345</p>
+
+                                <div class="contact-icon mt-4">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <h4 class="text-center mb-3">Call Us</h4>
+                                <p class="text-center text-muted">+91 8830437088</p>
+
+                                <div class="contact-icon mt-4">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h4 class="text-center mb-3">Email</h4>
+                                <p class="text-center text-muted">khairnarakshay1722@gmail.com</p>
+
+                                <!-- Social Media -->
+                                <div class="mt-5 text-center">
+                                    <h5 class="mb-4">Follow Us</h5>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a href="#" class="social-icon bg-facebook">
+                                            <i class="fab fa-facebook-f text-white"></i>
+                                        </a>
+                                        <a href="#" class="social-icon bg-twitter">
+                                            <i class="fab fa-twitter text-white"></i>
+                                        </a>
+                                        <a href="#" class="social-icon bg-instagram">
+                                            <i class="fab fa-instagram text-white"></i>
+                                        </a>
+                                        <a href="#" class="social-icon bg-linkedin">
+                                            <i class="fab fa-linkedin-in text-white"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="col-lg-8">
+                        <div class="contact-card p-4 p-md-5">
+                            <form>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="name" placeholder="Name">
+                                            <label for="name">Your Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="email" placeholder="Email">
+                                            <label for="email">Your Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                            <label for="subject">Subject</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <textarea class="form-control" placeholder="Message" 
+                                            id="message" style="height: 150px"></textarea>
+                                            <label for="message">Message</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button class="btn btn-send text-white w-100 py-3" type="submit">
+                                            Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
