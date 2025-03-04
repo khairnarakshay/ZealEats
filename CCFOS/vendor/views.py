@@ -90,12 +90,13 @@ def vendor_login(request):
 
     return render(request, "login.html")
 
-@login_required
+#@login_required
 def dashboard(request):
     if "vendor_id" not in request.session:
         messages.error(request, "You must be logged in to access the dashboard.")
         return redirect("login")
 
+    
     return render(request, "vendor_dashboard.html", {"vendor_name": request.session["vendor_name"]})
 
 def vendor_logout(request):
@@ -152,7 +153,7 @@ def additems(request):
         
         food_item.save()
         messages.success(request, "Food item added successfully.")
-        return redirect("additems")
+        return redirect("manage_items")
                   
     return render(request, 'add_items.html')
 
@@ -166,13 +167,37 @@ def manage_items(request):
     # Fetch food items belonging to the logged-in vendor
     food_items = FoodItem.objects.filter(vendor_id=vendor_id)
 
-    print(food_items)  # Debugging: Check if items exist in the terminal
-
+    # for items in food_items :  # Debugging: Check if items exist in the terminal
+    #     print(f'Name : {items}')
     return render(request, "manage_items.html", {"food_items": food_items})
 
 def update_items(request, id):
+    food_items = get_object_or_404(FoodItem, id=id)
+    print("you are updatating a food item " ,id)
+    
+    if request.method == "POST":
+        print("updatting a item")
+        
+        food_items.food_name = request.POST["foodName"]
+        food_items.description = request.POST["description"] 
+        food_items.food_type = request.POST["FoodType"]
+        food_items.category = request.POST["Category"]
+        food_items.price = request.POST["Price"]
+        
+          # Check if a new image is uploaded
+        try :  
+            if "image" in request.FILES:
+                food_items.image = request.FILES["image"] 
+        except :
+            messages.error(request, "please add a image")
 
-    return render(request, 'update_item.html')
+        food_items.save()
+        messages.success(request, "Food item updated successfully.")
+        return redirect("manage_items")
+    
+    
+
+    return render(request, 'update_items.html', {'food_item': food_items})
 
 
 from django.shortcuts import get_object_or_404, redirect
