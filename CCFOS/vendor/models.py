@@ -15,6 +15,7 @@ class CanteenVendor(models.Model):
 class FoodItem(models.Model):
     #reasturant_name = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE, related_name='food_items_restaurant')
     vendor = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE)# Reference vendor ID
+    
     food_name = models.CharField(max_length=100)
     description = models.TextField()
     TYPE_CHOICES = [('Veg', 'Veg'), ('Non-Veg', 'Non-Veg')]
