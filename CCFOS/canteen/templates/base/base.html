@@ -9,48 +9,56 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-      
 </head>
-<body style = "background-color:rgb(221, 196, 186)"; >
-
-
-
-<nav class="navbar">
-    <div class="navdiv" >
-        <div class="logo">
-            <img src="{% static   'images/logo.png' %}" class="logo">
+<body class="d-flex flex-column min-vh-100" style="background-color:rgb(221, 196, 186);">
+    <div class=" flex-grow-1">
+        {% if messages %}
+        <div id="message-box">
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
         </div>
-        <div  class="menu"> 
-        <ul>
-            <li><a href="{% url "home" %}">Home</a></li>
-            <li><a  href="{% url "mycart" %}">MyCart</a></li>
-            <li><a href="{% url "myorder" %}">MyOrder</a>
-            </li>
-            <li><a href="{% url "aboutus" %}">AboutUs</a></li>
-            <li><a href="{% url "contactus" %}">Contact</a></li>
-            <button><a href="#">SignIn</a></button>
-            <button><a href="#">SignOut</a></button>
-        </ul>
-       </div>
- </div>
-</nav>
 
-
-
-{% block content %}
-
-{% endblock content %}
-<!-- Footer -->
-<footer class="bg-dark text-white text-center py-3 mt-auto">
-    <div class="container">
-        <p>&copy; 2025 Food Delivery. All rights reserved.</p>
-        <p>
-            <a href="#" class="text-white text-decoration-none mx-2">Privacy Policy</a> |
-            <a href="#" class="text-white text-decoration-none mx-2">Terms of Service</a>
-        </p>
+        <script>
+          setTimeout(function() {
+            document.getElementById("message-box").style.display = "none";
+          }, 3000); // Hide message after 3 seconds
+        </script>
+      {% endif %}
+        <nav class="navbar">
+            <div class="navdiv">
+                <div class="logo">
+                    <img src="{% static 'images/logo.png' %}" class="logo">
+                </div>
+                <div class="menu"> 
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'mycart' %}">MyCart</a></li>
+                        <li><a href="{% url 'myorder' %}">MyOrder</a></li>
+                        <li><a href="{% url 'aboutus' %}">AboutUs</a></li>
+                        <li><a href="{% url 'contactus' %}">Contact</a></li>
+                        <button><a href="{% url 'registration' %}">SignIn</a></button>
+                        <button><a href="{% url 'customer_logout' %}">SignOut</a></button>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+      
+        {% block content %}
+        {% endblock content %}
     </div>
-</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p>&copy; 2025 Food Delivery. All rights reserved.</p>
+            <p>
+                <a href="#" class="text-white text-decoration-none mx-2">Privacy Policy</a> |
+                <a href="#" class="text-white text-decoration-none mx-2">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
