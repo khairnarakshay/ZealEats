@@ -1,72 +1,174 @@
 {% extends 'base1/base.html' %}
 
-{% block title %}Dashboard -  FOOD DELIVERY{% endblock %}
+{% block title %}Dashboard - FOOD DELIVERY{% endblock %}
 
 {% block content %}
-<div class="border">
-  
-    <h2 class="text-xl font-semibold">Upper Dashboard</h2>
 
-  <!-- Upper Dashboard Cards -->
-  <div class="border border-success d-flex flex-wrap p-2 m-2 justify-content-evenly gap-1"> 
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('orders')">
-      <h2>Orders</h2>
-    </div>
-    
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('cancelled-orders')">
-      <h2>Cancelled Orders</h2>
-    </div>
-    
-    <div style="width: 300px; height: 100px; cursor: pointer;" 
-         class="d-flex border rounded-lg p-2 bg-white shadow-sm justify-content-center align-items-center text-uppercase fs-4 fw-bold" 
-         onclick="showContent('pending-orders')">
-      <h2>Pending Orders</h2>
-    </div>
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .dashboard-card {
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .dashboard-card:hover {
+        background-color: #e9ecef;
+    }
+    .content-box {
+        min-height: 300px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="container mt-0">
+  <h3 class="mb-4 text-center font-weight-bold" style="font-size: 28px;">Admin Dashboard</h3>
+
+  <!-- Upper Dashboard -->
+  <div class="row text-center mb-4">
+      <div class="col-md-4">
+          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('orders')">
+              <h5>ORDERS</h5>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('cancelledOrders')">
+              <h5>CANCELLED ORDERS</h5>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('pendingOrders')">
+              <h5>PENDING ORDERS</h5>
+          </div>
+      </div>
   </div>
-  
-  <!-- Lower Dashboard -->
-  <div>
-    <h2 class="text-xl font-semibold">Lower Dashboard</h2>
-    <div id="lower-dashboard" class="border p-3 mt-2">
-      <p>Select an option from the upper dashboard to display details here.</p>
-    </div>
-  </div>    
+
+  <!-- Lower Dashboard (Dynamic Content) -->
+  <div class="content-box">
+      <h5 id="lower-title" class="text-center">Select an option from the upper dashboard to display details here.</h5>
+      <div id="dashboard-content"></div>
+  </div>
 </div>
 
-<!-- JavaScript to update content dynamically -->
 <script>
-  function showContent(type) {
-    let content = '';
+    function showData(category) {
+        let title = document.getElementById("lower-title");
+        let content = document.getElementById("dashboard-content");
 
-    if (type === 'orders') {
-      content = `<h3 class="text-primary">All Orders</h3>
-                 <ul>
-                   <li>Order 1: Food Item A</li>
-                   <li>Order 2: Food Item B</li>
-                   <li>Order 3: Food Item C</li>
-                 </ul>`;
-    } 
-    else if (type === 'cancelled-orders') {
-      content = `<h3 class="text-danger">Cancelled Orders</h3>
-                 <ul>
-                   <li>Order 5: Cancelled due to non-payment</li>
-                   <li>Order 8: Cancelled by user</li>
-                 </ul>`;
-    } 
-    else if (type === 'pending-orders') {
-      content = `<h3 class="text-warning">Pending Orders</h3>
-                 <ul>
-                   <li>Order 7: Waiting for confirmation</li>
-                   <li>Order 10: Payment pending</li>
-                 </ul>`;
+        let data = {
+            orders: `
+                <div class="w-full">
+    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
+        <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
+                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
+                <th class="py-2 px-2 md:px-4 text-left">Status</th>
+                <th class="py-2 px-2 md:px-4 text-left">Total</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-300">
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-2 md:px-4">1001</td>
+                <td class="py-2 px-2 md:px-4">John Doe</td>
+                <td class="py-2 px-2 md:px-4 text-green-600 font-semibold">Completed</td>
+                <td class="py-2 px-2 md:px-4 font-semibold">₹15.99</td>
+            </tr>
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-2 md:px-4">1002</td>
+                <td class="py-2 px-2 md:px-4">Jane Smith</td>
+                <td class="py-2 px-2 md:px-4 text-yellow-500 font-semibold">Pending</td>
+                <td class="py-2 px-2 md:px-4 font-semibold">₹9.49</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+            `,
+            cancelledOrders: `
+                <div class="w-full">
+    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
+        <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
+                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
+                <th class="py-2 px-2 md:px-4 text-left">Status</th>
+                <th class="py-2 px-2 md:px-4 text-left">Total</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-300">
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-2 md:px-4">1001</td>
+                <td class="py-2 px-2 md:px-4">John Doe</td>
+                <td class="py-2 px-2 md:px-4 text-green-600 font-semibold">Completed</td>
+                <td class="py-2 px-2 md:px-4 font-semibold">₹15.99</td>
+            </tr>
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-2 md:px-4">1002</td>
+                <td class="py-2 px-2 md:px-4">Jane Smith</td>
+                <td class="py-2 px-2 md:px-4 text-yellow-500 font-semibold">Pending</td>
+                <td class="py-2 px-2 md:px-4 font-semibold">₹9.49</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+            `,
+            pendingOrders: `
+                <div class="w-full">
+    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
+        <thead class="bg-gray-800 text-white">
+            <tr>
+                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
+                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
+                <th class="py-2 px-2 md:px-4 text-left">Status</th>
+                <th class="py-2 px-2 md:px-4 text-left">ETA</th>
+                <th class="py-2 px-2 md:px-4 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-300">
+            {% for order in pending_orders %}
+            <tr class="hover:bg-gray-100">
+                <td class="py-2 px-2 md:px-4">{{ order.id }}1</td>
+                <td class="py-2 px-2 md:px-4">{{ order.customer }}Akshay</td>
+                <td class="py-2 px-2 md:px-4">
+                    <form method="POST" action="{% url 'update-order-status' order.id %}">
+                        {% csrf_token %}
+                        <select name="status" class="border border-gray-300 rounded-md px-2 py-1">
+                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
+                            <option value="Completed" {% if order.status == "Completed" %}selected{% endif %}>Completed</option>
+                            <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                        </select>
+                </td>
+                <td class="py-2 px-2 md:px-4 font-semibold">{{ order.eta }}</td>
+                <td class="py-2 px-2 md:px-4">
+                        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm">
+                            Update
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+            `
+        };
+
+        title.innerHTML = category
+            .replace(/([A-Z])/g, " ")
+            .replace(/^./, str => str.toUpperCase());
+        content.innerHTML = data[category];
     }
-
-    document.getElementById('lower-dashboard').innerHTML = content;
-  }
 </script>
 
 {% endblock %}
