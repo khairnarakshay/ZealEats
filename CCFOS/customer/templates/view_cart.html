@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Left Side: Cart Items -->
+        <div class="col-md-8">
+            <div class="cart-items">
+                <h2>Your Cart</h2>
+                
+                {% if cart_items %}
+                    {% for cart_item in cart_items %}
+                        <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                            <div class="d-flex">
+                                <!-- Food Item Image -->
+                                <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" style="width: 80px; height: 80px;" class="mr-3">
+
+                                <!-- Food Item Details -->
+                                <div>
+                                    <h4>{{ cart_item.food_item.food_name }}</h4>
+                                    <p>{{ cart_item.food_item.description }}</p>
+                                    <p><strong>Type:</strong> {{ cart_item.food_item.food_type }}</p>
+                                    <p><strong>Category:</strong> {{ cart_item.food_item.category }}</p>
+                                    <p><strong>Vendor:</strong> {{ cart_item.food_item.vendor.name }}</p>
+                                    <p><strong>Price:</strong> ₹{{ cart_item.price }}</p>
+
+                                    <!-- Quantity Update Section -->
+                                    <div class="quantity-control d-flex align-items-center">
+                                        <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-cart-item-id="{{ cart_item.id }}">-</button>
+                                        <span class="mx-2 quantity-value">{{ cart_item.quantity }}</span>
+                                        <button class="btn btn-sm btn-outline-secondary increase-quantity" data-cart-item-id="{{ cart_item.id }}">+</button>
+                                    </div>
+
+                                    <!-- Total Price for this item -->
+                                    <p><strong>Amount:</strong> ₹<span class="amount-value">{{ cart_item.total_price }}</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Delete Button -->
+                            <button class="delete-item btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Your cart is empty.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.increase-quantity, .decrease-quantity').forEach(button => {
+            button.addEventListener('click', function () {
+                const cartItemId = this.getAttribute('data-cart-item-id');
+                const action = this.classList.contains('increase-quantity') ? 'increase' : 'decrease';
+                const quantityElement = this.closest('.quantity-control').querySelector('.quantity-value');
+                const amountElement = this.closest('.cart-item').querySelector('.amount-value');
+
+                // Sending the update request
+                fetch("{% url 'update_quantity' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `cart_item_id=${cartItemId}&action=${action}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.quantity !== undefined) {
+                        // Update the UI with the new quantity and total price
+                        quantityElement.textContent = data.quantity;
+                        amountElement.textContent = data.total_price.toFixed(2);  // Ensure price is rounded to 2 decimals
+                    } else {
+                        alert("Error updating cart.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    });
+</script>
