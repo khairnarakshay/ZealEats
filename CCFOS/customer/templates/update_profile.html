@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% block content %}
+
+{% load static %}
+
+<div class="main-content position-relative w-100" style="background: url('{% static "images/zeal.jpg" %}') center/cover no-repeat; min-height: 100vh;">
+    <!-- Transparent Overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.1);"></div>
+  
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row w-100 mt-5">
+        <!-- Welcome Section -->
+        <div class="col-md-4 d-flex flex-column justify-content-center p-5 bg-dark card shadow-lg">
+            <h1 class="text-primary">Welcome to ZEAL College Canteen!</h1>
+            <p class="fs-5">Experience hassle-free food ordering. Log in or register to get started!</p>
+        </div>
+
+        <!-- Registration Form Section -->
+        <div class="col-md-8 d-flex justify-content-center align-items-center">
+            <div class="card shadow-lg p-4 w-100">
+                <h3 class="text-center mb-4 bg-dark text-white p-2">Update Profile</h3>
+
+                <!-- Django Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'update_profile' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="full_name" placeholder="Enter Full Name"
+                             required value="{{ customer.full_name }}">
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="text" class="form-control" name="mobile" placeholder="Enter Mobile Number"
+                               value="{{ customer.mobile_number}}" required>
+                    </div>
+                
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+
+                    
+                </form>
+                
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+{% endblock %}

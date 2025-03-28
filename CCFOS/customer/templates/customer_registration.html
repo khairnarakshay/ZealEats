@@ -92,7 +92,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- JavaScript to Send Email OTP -->
-<script>
+<!-- <script>
     document.getElementById("sendOtpBtn").addEventListener("click", function() {
         var email = document.getElementById("email").value;
     
@@ -164,5 +164,77 @@
     });
     </script>
     
+ -->
 
+ <script>
+    document.getElementById("sendOtpBtn").addEventListener("click", function() {
+    var email = document.getElementById("email").value;
+
+    // Check if the email is already registered
+    fetch("{% url 'check_email_exists' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "email=" + encodeURIComponent(email)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "exists") {
+            alert("Email already registered! Please use a different email.");
+        } else if (data.status === "available") {
+            alert("Email is available! Sending OTP...");
+
+            // Send OTP request to backend
+            fetch("{% url 'send_otp' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "email=" + encodeURIComponent(email)
+            })
+            .then(response => response.json())
+            .then(otpData => {
+                if (otpData.status === "sent") {
+                    alert("OTP sent successfully!");
+                } else {
+                    alert("Failed to send OTP. Try again.");
+                }
+            });
+        } else {
+            alert("Error checking email. Try again.");
+        }
+    });
+});
+
+// ✅ Move the OTP verification logic outside
+document.getElementById("validateOtpBtn").addEventListener("click", function() {
+    var email = document.getElementById("email").value;
+    var otp = document.getElementById("otp").value;
+
+    fetch("{% url 'validate_otp' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "email=" + encodeURIComponent(email) + "&otp=" + encodeURIComponent(otp)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("OTP verified successfully! You can proceed.");
+        } else {
+            alert(data.message); // Show the error message (e.g., "Invalid OTP")
+        }
+    })
+    .catch(error => {
+        alert("Error verifying OTP. Try again.");
+        console.error(error);
+    });
+});
+
+ </script>
 {% endblock %}
