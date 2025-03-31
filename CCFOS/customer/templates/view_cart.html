@@ -12,113 +12,189 @@
 </div>
 {% endblock username %}
 {% block content %}
-<div class="container">
-    
-    <div class="cart-items">
-        {% if cart_items %}
+<div class="container my-4">
+    <div class="row">
+      <!-- Left Section: Cart -->
+      <div class="col-md-8">
+        <div class="cart-items">
+          {% if cart_items %}
             {% for cart_item in cart_items %}
-                <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
-                    <div class="d-flex">
-                        <!-- Food Item Image -->
-                        <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" 
-                             style="width: 80px; height: 80px;" class="mr-3">
-
-                        <!-- Food Item Details -->
-                        <div>
-                            <h4>{{ cart_item.food_item.food_name }}</h4>
-                            <p>{{ cart_item.food_item.description }}</p>
-                            <p><strong>Price:</strong> ₹{{ cart_item.food_item.price }}</p>
-
-                            <!-- Form for Quantity Update -->
-                            <form method="POST" action="{% url 'update_cart' cart_item.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
-                                <div class="quantity-control d-flex align-items-center">
-                                    <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
-                                    <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1"
-                                           class="mx-2 form-control" style="width: 50px;">
-                                    <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
-                                </div>
-                            </form>
-
-                            <!-- Total Price for this item -->
-                            <p><strong>Amount:</strong> ₹{{ cart_item.total_price }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Delete Button -->
-                    <form method="POST" action="{% url 'remove_from_cart' cart_item.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                        <buttob type="submit" class="btn btn-primary">Order</button>
+              <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                <div class="d-flex">
+                  <!-- Food Item Image -->
+                  <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" 
+                       style="width: 80px; height: 80px;" class="mr-3">
+  
+                  <!-- Food Item Details -->
+                  <div>
+                    <h4 class="food-name">{{ cart_item.food_item.food_name }}</h4>
+                    <p class="food-desc">{{ cart_item.food_item.description }}</p>
+                    <p class = "resto-name"> By {{ cart_item.food_item.vendor.restaurant_name }}
+                    </p>
+                    <p><strong>Price:</strong> ₹<span class="food-price">{{ cart_item.food_item.price }}</span></p>
+  
+                    <!-- Form for Quantity Update -->
+                    <form method="POST" action="{% url 'update_cart' cart_item.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
+                      <div class="quantity-control d-flex align-items-center">
+                        <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
+                        <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1"
+                               class="mx-2 form-control food-quantity" style="width: 50px;">
+                        <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                      </div>
                     </form>
+  
+                    <!-- Total Price for this item -->
+                    <p><strong>Amount:</strong> ₹<span class="food-total">{{ cart_item.total_price }}</span></p>
+                  </div>
                 </div>
+  
+                <!-- Delete & Order Buttons -->
+                <form method="POST" action="{% url 'remove_from_cart' cart_item.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                </form>
+                <button type="button" class="btn btn-primary order-btn">Order</button>
+              </div>
             {% endfor %}
-        {% else %}
+          {% else %}
             <p>Your cart is empty.</p>
-        {% endif %}
-    </div>
-</div>
-
-
-
-<div class="mycart-page">
- <div class="left-side">
-   <div class="left-side-cart">
-     <div class="cart-item">
-        {% if cart_items %}
-            {% for cart_item in cart_items %}
-       <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" >
-       <div class="item-details">
-         <h3><b>{{ cart_item.food_item.food_name }}</b></h3>
-         <p>{{ cart_item.food_item.description }}</p>
-         <div class="item-info">
-           <div class="price"><p><strong>Price:</strong> ₹{{ cart_item.food_item.price }}</p></div>
-           <div class="quantity">
-            <form method="POST" action="{% url 'update_cart' cart_item.id %}">
-                {% csrf_token %}
-                <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
-                <div class="quantity-control d-flex align-items-center">
-                    <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
-                    <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1"
-                           class="mx-2 form-control" style="width: 50px;">
-                    <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
-                </div>
-            </form>
-            
-           </div>
-           <div class="amount"><p><strong>Amount:</strong> ₹{{ cart_item.total_price }}</p></div>
-         </div>
-       </div>
-        <!-- Delete Button -->
-        <form method="POST" action="{% url 'remove_from_cart' cart_item.id %}">
+          {% endif %}
+        </div>
+      </div>
+  
+      <!-- Right Section: Payment Options -->
+      <div class="col-md-4">
+        <div class="payment-options" style="position: sticky; top: 20px; background-color: #f8f9fa; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+          <h3>Payment Details</h3>
+          <div id="selected-items">
+            <p>No item selected yet.</p>
+          </div>
+          <h4>Total Amount: ₹<span id="total-amount">0</span></h4>
+  
+          <p>Select a payment method:</p>
+          <form method="POST" action="{% url 'place_order' %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-            <buttob type="submit" class="btn btn-primary">Order</button>
-        </form>
+            <input type="hidden" name="total_amount" value="{{ total_amount }}">
+            <input type="hidden" name="payment_method" id="payment_method_input">
+
+            <!-- Cart Item Summary -->
+            <div class="cart-items-summary">
+                <!-- Cart item details will be appended here by JavaScript -->
+            </div>
+
+            <!-- Payment Method Selection -->
+            <!-- Payment Method Selection -->
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="payment_method" value="credit_card" id="credit_card">
+            <label class="form-check-label" for="credit_card">Credit Card</label>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
+            <label class="form-check-label" for="paypal">PayPal</label>
+          </div>
+
+          <!-- Credit Card Details (Hidden by Default) -->
+          <div id="credit-card-details" style="display: none; margin-top: 10px;">
+            <label>Card Number:</label>
+            <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456">
+            
+            <label>Expiration Date:</label>
+            <input type="text" name="expiry_date" class="form-control" placeholder="MM/YY">
+            
+            <label>CVV:</label>
+            <input type="text" name="cvv" class="form-control" placeholder="123">
+          </div>
+
+          <button type="submit" class="btn btn-success mt-3">Proceed to Pay</button>
+              </form>
+        </div>
+      </div>
     </div>
-    {% endfor %}
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
-   </div>
- </div>
+  </div>
+  
+  <!-- jQuery Script -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+$(document).ready(function() {
+    let selectedRestaurant = null; // Track selected restaurant
+    let totalAmount = 0; // Initialize total amount
+    let orderedItems = new Set(); // Track ordered items to prevent duplicates
 
- <!-- Right-side content for payment   -->
- <div class="right-side">
-   <div class="cart-categories-items">
-     <div class="card" style="width: 18rem;">
-       <img src="{% static "images/veg puff.jpg" %}" class="card-img-top" alt="...">
-       <div class="card-body">
-         <h5 class="card-title">Card title</h5>
-         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-         <p><b>₹0</b></p>
-         <a href="#" class="btn btn-primary">Go somewhere</a>
-       </div>
-     </div>
-   </div>
- </div>
-</div>
+    $(".order-btn").click(function() {
+        let cartItem = $(this).closest(".cart-item");
+        let itemName = cartItem.find(".food-name").text();
+        let itemQuantity = cartItem.find(".food-quantity").val();
+        let itemTotal = cartItem.find(".food-total").text();
+        let restaurantName = cartItem.find(".resto-name").text().trim();
+
+        let cleanedTotal = parseFloat(itemTotal.replace(/[^\d.]/g, '')) || 0;
+
+        // Ensure restaurant consistency
+        if (selectedRestaurant === null) {
+            selectedRestaurant = restaurantName;
+        } else if (restaurantName !== selectedRestaurant) {
+            alert("You can only order from one restaurant at a time.");
+            return;
+        }
+
+        // Prevent duplicate entries in selected items
+        if (orderedItems.has(itemName)) {
+            alert(itemName + " is already added to the order.");
+            return;
+        }
+        orderedItems.add(itemName);
+
+        // Append selected items to payment box
+        $("#selected-items").append(
+          `<p><strong>${itemName}</strong> x${itemQuantity} - ₹${cleanedTotal}</p>`
+        );
+
+        // Update total amount
+        totalAmount += cleanedTotal;
+        $("#total-amount").text(totalAmount.toFixed(2));
+        $("input[name='total_amount']").val(totalAmount.toFixed(2));
+    });
+
+    // Handle payment method selection
+    $("input[name='payment_method']").change(function() {
+        if ($(this).val() === "credit_card") {
+            $("#credit-card-details").slideDown();
+        } else {
+            $("#credit-card-details").slideUp();
+        }
+    });
+
+    // Validate form submission
+    $("form").submit(function(e) {
+        if ($(this).attr("action").includes("place_order")) {
+            let selectedPaymentMethod = $("input[name='payment_method']:checked").val();
+            
+            if (!selectedPaymentMethod) {
+                alert("Please select a payment method before proceeding.");
+                e.preventDefault();
+                return;
+            }
+
+            if (selectedPaymentMethod === "credit_card") {
+                let cardNumber = $("input[name='card_number']").val().trim();
+                let expiryDate = $("input[name='expiry_date']").val().trim();
+                let cvv = $("input[name='cvv']").val().trim();
+                
+                if (!cardNumber || !expiryDate || !cvv) {
+                    alert("Please enter all credit card details.");
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            $("#payment_method_input").val(selectedPaymentMethod);
+        }
+    });
+});
 
 
-{% endblock content %} 
+  </script>
+    
+  {% endblock content %} 
