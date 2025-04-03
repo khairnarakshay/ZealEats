@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import make_password, check_password
@@ -21,6 +21,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import smart_bytes
 from django.utils.timezone import now
 from datetime import timedelta
+from .models import Cart, CartItem, Order
+from decimal import Decimal, InvalidOperation
+import re
 
 def registration_view(request):
     if request.method == "POST":
@@ -369,39 +372,82 @@ from django.http import JsonResponse
 from .models import FoodItem  # Import your FoodItem model
 
 # 🚀 ADD TO CART
+# def add_to_cart(request, food_id):
+#     if not request.session.get('customer_id'):
+#         print('customer id in add to cart', request.session.get('customer_id'))
+#         return redirect('customer_login')  # Redirect to login page if customer is not authenticated
+    
+#     # Get the food item
+#     food_item = FoodItem.objects.get(id=food_id)
+#     food_name = food_item.food_name
+#     print("Food Item:", food_item)
+#     print("Food Itme ADDED TO CART" , food_name)
+#     quantity = int(request.POST.get('quantity', 1))
+
+#     # Get or create the customer's cart
+#     customer_id = request.session.get('customer_id')
+#     customer = Customer.objects.get(id=customer_id)
+#     print('customer found', customer_id)
+#     cart, created = Cart.objects.get_or_create(customer=customer)
+
+#     # Check if the food item is already in the cart
+#     try:
+#         cart_item, created = CartItem.objects.get_or_create(cart=cart, food_item=food_item) 
+#         print("cart_item:", cart_item)
+        
+#         if created:
+#             # If the item was not in the cart, set the initial quantity and price
+#             cart_item.quantity = quantity
+#             cart_item.price = food_item.price
+#         else:
+#             # If the item is already in the cart, update the quantity
+#             cart_item.quantity += quantity
+        
+#         cart_item.save()
+#     except Exception as e:
+#         print('Error in cart item:', e)
+#         return redirect('view_cart')  # You can redirect to the cart view or show an error message
+
+#     return redirect('view_cart')  # Redirect to the cart view
+
 def add_to_cart(request, food_id):
     if not request.session.get('customer_id'):
-        print('customer id in add to cart', request.session.get('customer_id'))
         return redirect('customer_login')  # Redirect to login page if customer is not authenticated
     
     # Get the food item
-    food_item = FoodItem.objects.get(id=food_id)
-    print("Food Itme ADDED TO CART" , food_item)
+    food_item = get_object_or_404(FoodItem, id=food_id)
     quantity = int(request.POST.get('quantity', 1))
 
     # Get or create the customer's cart
     customer_id = request.session.get('customer_id')
-    customer = Customer.objects.get(id=customer_id)
-    print('customer found', customer_id)
+    customer = get_object_or_404(Customer, id=customer_id)
     cart, created = Cart.objects.get_or_create(customer=customer)
+    print('ca__',cart)
+    print('customer found', customer_id)
+    print("Food Item:", food_item)
+    
 
     # Check if the food item is already in the cart
     try:
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, food_item=food_item)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, food_item=food_item) 
         print("cart_item:", cart_item)
-        
         if created:
             # If the item was not in the cart, set the initial quantity and price
             cart_item.quantity = quantity
             cart_item.price = food_item.price
+            
         else:
             # If the item is already in the cart, update the quantity
             cart_item.quantity += quantity
         
+        # Save the cart item
+        
         cart_item.save()
+        print("cart item saved")
+        print("cart item", cart_item)
     except Exception as e:
         print('Error in cart item:', e)
-        return redirect('view_cart')  # You can redirect to the cart view or show an error message
+        return redirect('view_cart')  # Redirect to the cart view or show an error message
 
     return redirect('view_cart')  # Redirect to the cart view
 
@@ -502,3 +548,165 @@ def remove_from_cart(request, cart_item_id):
         return redirect('view_cart')  # Redirect back to cart after deletion
 
     return JsonResponse({"success": False, "error": "Invalid request"})
+
+def place_order(request):
+    customer_id = request.session.get("customer_id")
+    
+    if not customer_id:
+        messages.error(request, "You must be logged in to place an order.")
+        return redirect("customer_login")
+
+    customer = get_object_or_404(Customer, id=customer_id)
+    print("Customer Name:", customer.full_name)
+    
+    cart = Cart.objects.filter(customer=customer).first()
+
+    if not cart or not cart.items.exists():
+        messages.error(request, "Your cart is empty. Add items before ordering.")
+        return redirect("view_cart")
+
+    if request.method == "POST":
+        payment_method = request.POST.get("payment_method")
+        total_amount = request.POST.get("total_amount")
+        
+        # Use get to retrieve the comma-separated string and split it into a list
+        selected_cart_item_ids = request.POST.get("selected_item_ids", "").split(",")
+        print("Selected Cart Item IDs (frontend):", selected_cart_item_ids)
+
+        # Filter out empty strings and non-integer values
+        selected_cart_item_ids = [item_id for item_id in selected_cart_item_ids if item_id.isdigit()]
+        print("Selected Cart Item IDs (backend):", selected_cart_item_ids)
+
+        if not selected_cart_item_ids:
+            messages.error(request, "No valid items selected. Please add items to the cart before placing an order.")
+            return redirect("view_cart")
+
+        try:
+            total_amount = Decimal(total_amount)
+        except:
+            messages.error(request, "Invalid amount format.")
+            return redirect("view_cart")
+
+        if not payment_method:
+            messages.error(request, "Please select a payment method.")
+            return redirect("view_cart")
+
+        # Process card details if Card payment is selected
+        if payment_method == "Card":
+            card_number = request.POST.get("card_number", "").strip()
+            card_holder = request.POST.get("card_holder", "").strip()
+            expiry_date = request.POST.get("expiry_date", "").strip()
+            cvv = request.POST.get("cvv", "").strip()
+
+            if len(card_number) != 16 or not card_number.isdigit():
+                messages.error(request, "Invalid Card Number.")
+                return redirect("view_cart")
+
+            if not card_holder:
+                messages.error(request, "Card Holder Name is required.")
+                return redirect("view_cart")
+
+            if not expiry_date or not re.match(r"^(0[1-9]|1[0-2])\/\d{2}$", expiry_date):
+                messages.error(request, "Invalid Expiry Date format (MM/YY).")
+                return redirect("view_cart")
+
+            if len(cvv) != 3 or not cvv.isdigit():
+                messages.error(request, "Invalid CVV.")
+                return redirect("view_cart")
+
+        # Process only selected cart items
+        for cart_item in cart.items.filter(id__in=selected_cart_item_ids):
+            new_order = Order.objects.create(
+                customer=customer,
+                food_item=cart_item.food_item,
+                quantity=cart_item.quantity,
+                price=cart_item.price,
+                restaurant_name=cart_item.food_item.vendor.restaurant_name,
+                total_amount=cart_item.price * cart_item.quantity,
+                payment_method=payment_method,
+                order_status="Pending",
+                payment_status="Pending",
+                is_paid=(payment_method == "Card"),
+            )
+
+            print(f"Order Created: {new_order.id} for {cart_item.food_item.food_name}")
+            cart_item.delete()  # Remove the cart item after order is created
+
+        messages.success(request, "Order placed successfully!")
+        return redirect("order_success")
+    
+    
+def view_orders(request):
+    customer_id = request.session.get('customer_id')
+    print("cusomer", customer_id)
+    if not customer_id:
+        messages.error(request, "You must be logged in to view your orders.")
+        return redirect('customer_login')
+
+    customer = get_object_or_404(Customer, id=customer_id)
+    print( 'cusomer in view order')
+    orders = Order.objects.filter(customer=customer).order_by('-order_date')  # Get all orders for the customer
+    
+    return render(request, 'view_orders.html', {'orders': orders})
+
+def order_details(request, order_id):
+    print("order id", order_id)
+    order = get_object_or_404(Order, id=order_id)
+    items = CartItem.objects.filter(order=order)  # Ensure you have a relationship set up
+
+    order_data = {
+        'order_date': order.order_date,
+        'total_amount': order.total_amount,
+        'payment_method': order.payment_method,
+        'items': []
+    }
+    
+    for item in items:
+        order_data['items'].append({
+            'food_item': {
+                'food_name': item.food_item.food_name,
+                'image': item.food_item.image.url,  # Ensure this field exists
+            },
+            'price': item.price,
+            'quantity': item.quantity,
+            'total_price': item.total_price()
+        })
+    
+    return JsonResponse(order_data)
+
+def print_order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    #items = order.items.all()  # Assuming you have a related name for items in the Order model
+
+    return render(request, 'print_order.html', {'order': order,})
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from .models import Order  # Adjust the import based on your models
+def cancel_order(request, order_id):
+    """Handles order cancellation for authenticated users only."""
+    if request.method == "POST":
+        # Ensure the user is authenticated via session
+        customer_id = request.session.get('customer_id')
+        if not customer_id:  # Check if customer_id is in the session
+            messages.error(request, "You must be logged in to cancel an order.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))  # Redirect to the previous page or home
+
+        # Get the order and check if it belongs to the logged-in user
+        order = get_object_or_404(Order, id=order_id, customer_id=customer_id)
+
+        # Allow cancellation only if it's not shipped/delivered
+        if order.order_status in ["Pending", "Processing"]:
+            order.order_status = "Cancelled"
+            order.save()
+            messages.success(request, "Order cancelled successfully!")
+        else:
+            messages.error(request, "This order cannot be cancelled.")
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))  # Redirect to the previous page or home
+
+    messages.error(request, "Invalid request.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))  # Redirect to the previous page or home
+
+def order_success(request):
+    return render(request, 'order_success.html')
