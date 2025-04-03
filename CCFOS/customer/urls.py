@@ -25,4 +25,11 @@ urlpatterns = [
     path('view_cart/', views.view_cart, name='view_cart'),
     path('update_cart/<int:cart_item_id>/', views.update_cart, name='update_cart'),
     path('remove_from_cart/<int:cart_item_id>/',views. remove_from_cart, name='remove_from_cart'),
+    path('place_order/', views.place_order, name='place_order'),
+    path('view_orders/', views.view_orders, name='view_orders'),
+    #path('order/details/<int:order_id>/', views.order_details, name='order_details'),
+    path('order/details/<int:order_id>/print/', views.print_order_details, name='print_order_details'),
+    path('order/cancel/<int:order_id>/',views.cancel_order, name='cancel_order'),
+    path('order_success/', views.order_success, name='order_success'),
+    #path('order/details/<int:order_id>/',views.order_details, name='order_details'),
 ]
