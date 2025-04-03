@@ -1,0 +1,148 @@
+
+<style>
+    /* General styles for the printable receipt */
+    .receipt-container {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        border: 2px solid #333;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background: #fff;
+    }
+
+    .company-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .company-header h2 {
+        margin: 0;
+        font-size: 26px;
+        color: #333;
+    }
+
+    .company-header p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .order-details {
+        margin-bottom: 20px;
+    }
+
+    .order-details p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .order-summary {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .order-summary th, .order-summary td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .order-summary th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+    }
+
+    .order-summary tfoot td {
+        font-weight: bold;
+        background-color: #f0f0f0;
+    }
+
+    .total-section {
+        text-align: right;
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    /* Print styles */
+    @media print {
+        button {
+            display: none; /* Hide print button */
+        }
+
+        .receipt-container {
+            border: none;
+            box-shadow: none;
+        }
+    }
+</style>
+
+<div class="receipt-container">
+    <div class="company-header">
+        <h2>{{ order.restaurant_name }}</h2>
+        <p>ZEAL College,Narhe, Pune  | Phone: +91 8830437088</p>
+        
+    </div>
+
+    <div class="order-details">
+        <p><strong>Receipt #: </strong>{{ order.id }}</p>
+        <p><strong>Date: </strong>{{ order.order_date }}</p>
+        <p><strong>Customer Name: </strong>{{ order.customer }}</p>
+        <p><strong>Restaurant Name</strong>{{ order.restaurant_name }}</p>
+        <p><strong>Payment Method: </strong>{{ order.payment_method }}</p>
+        
+    </div>
+
+    <table class="order-summary">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+         
+            <tr>
+                <td>{{ order.food_item}}</td>
+                <td>{{ order.quantity }}</td>
+                <td>₹{{ order.price }}</td>
+                <td>₹{{ order.total_amount }}</td>
+            </tr>
+            
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align: right;">Subtotal:</td>
+                <td>₹{{ order.subtotal }}</td>
+            </tr>
+           
+            <tr>
+                <td colspan="3" style="text-align: right; font-size: 18px;">Grand Total:</td>
+                <td style="font-size: 18px;">₹{{ order.total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p>Thank you for your order! We appreciate your business.</p>
+        <p>Visit us again!</p>
+    </div>
+
+    <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+    
+
+    <button onclick="window.location.href='{% url 'home' %}'" class="btn btn-secondary">Go to Home</button>
+</div>
+
