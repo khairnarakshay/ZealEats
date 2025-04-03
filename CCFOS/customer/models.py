@@ -1,5 +1,7 @@
 from django.db import models
 from vendor.models import FoodItem
+from datetime import datetime
+
 # Create your models here.
 
 class Customer(models.Model):
@@ -26,6 +28,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    #order = models.ForeignKey('Order',  related_name="cart_items", on_delete=models.CASCADE, null=True, blank=True)  
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
@@ -37,3 +40,31 @@ class CartItem(models.Model):
 
     def total_price(self):
         return self.quantity * self.price
+    
+    
+class Order(models.Model):
+    ORDER_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE , null=False,default="")  # Link to Customer
+    order_date = models.DateTimeField(default=datetime.now)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2 , default=0.00)
+    payment_method = models.CharField(max_length=20)
+    payment_status = models.CharField(max_length=20, default="Pending")
+    is_paid = models.BooleanField(default=False)
+    order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='Pending')
+    
+    # These fields will store the details of the ordered items
+    quantity = models.PositiveIntegerField(default=1)
+    food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE , null=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    restaurant_name = models.CharField(max_length=100 , default="")
+
+    def __str__(self):
+        return f"Order for {self.customer.full_name} on {self.order_date}"
