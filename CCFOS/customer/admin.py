@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, Cart, CartItem
+from .models import Customer, Cart, CartItem, Order
 # Register your models here.
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -25,3 +25,10 @@ class CartItemAdmin(admin.ModelAdmin):
 # Register Cart and CartItem models with their respective admins
 admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)
+
+class  OrderAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'order_date', 'total_amount', 'payment_method', 'payment_status', 'is_paid', 'order_status','quantity','price','food_item','restaurant_name')  # Fields to display in the Order admin list view
+    search_fields = ('customer__full_name', 'payment_method')  # Allow searching by customer name and payment method
+
+    
+admin.site.register(Order, OrderAdmin)
