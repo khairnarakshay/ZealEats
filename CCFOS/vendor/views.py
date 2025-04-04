@@ -4,6 +4,8 @@ from django.contrib import messages
 from .models import CanteenVendor, FoodItem
 from django.contrib.auth import logout as auth_logout  # Keep logout for admin
 from django.contrib.auth.decorators import login_required
+from customer.models import Order 
+
 
 # def admin_logout(request):
 #     if request.user.is_authenticated and request.user.is_superuser:
@@ -95,9 +97,28 @@ def dashboard(request):
     if "vendor_id" not in request.session:
         messages.error(request, "You must be logged in to access the dashboard.")
         return redirect("login")
+    else:
+        vendor_id = request.session["vendor_id"]
+        vendor = CanteenVendor.objects.get(id=vendor_id)
+        all_orders = Order.objects.filter(vendor=vendor)
+        completed_orders = Order.objects.filter(order_status='Completed', vendor=vendor)
+        cancelled_orders = Order.objects.filter(order_status='Cancelled', vendor=vendor)
+        pending_orders = Order.objects.filter(order_status='Pending', vendor=vendor)
+
+        context = {
+            'all_orders': all_orders,
+            'completed_orders':  completed_orders,
+            'cancelled_orders': cancelled_orders,
+            'pending_orders': pending_orders,
+            'vendor_name': request.session.get("vendor_name", "Default Vendor") 
+        }
+        orders = Order.objects.all()
+        print(orders)
+        return render(request, 'vendor_dashboard.html', context, )
+    
 
     
-    return render(request, "vendor_dashboard.html", {"vendor_name": request.session["vendor_name"]})
+    #return render(request, "vendor_dashboard.html", {"vendor_name": request.session["vendor_name"]})
 
 def vendor_logout(request):
     request.session.pop("vendor_id", None)
@@ -211,3 +232,37 @@ def order(request):
 
 def account(request):
     return render(request, 'vendor_account.html')
+
+# def admin_dashboard(request):
+#     #Fetch data from the database
+#     orders = Order.objects.filter(status='Completed')
+#     cancelled_orders = Order.objects.filter(status='Cancelled')
+#     pending_orders = Order.objects.filter(status='Pending')
+
+#     context = {
+#         'orders': orders,
+#         'cancelled_orders': cancelled_orders,
+#         'pending_orders': pending_orders,
+#         ''
+#     }
+#     orders = Order.objects.all()
+#     print(orders)
+#     return render(request, 'vendor_dashboard.html', {'orders': orders})
+    
+
+def update_order_status(request, order_id):
+    if request.method == 'POST':
+        order = get_object_or_404(Order, id=order_id)
+        print("ode sause exist")
+        
+        print(order.order_status)
+        new_status = request.POST.get('status')
+        order.order_status  = new_status
+        order.save()
+
+        messages.success(request, f"Order #{order.id} status updated to {new_status}.")
+        return redirect('dashboard')  # Replace with your admin dashboard URL name
+
+    # Optional fallback
+    messages.error(request, "Invalid request.")
+    return redirect('dashboard') # Redirect back to the dashboard# Replace 'your_template.html' with your actual template name
