@@ -13,7 +13,7 @@ class CanteenVendor(models.Model):
         return self.restaurant_name
 
 class FoodItem(models.Model):
-    #reasturant_name = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE, related_name='food_items_restaurant')
+    #reasturant_name = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE , null=True)  # Reference restaurant ID
     vendor = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE)# Reference vendor ID
     
     food_name = models.CharField(max_length=100)
@@ -27,6 +27,7 @@ class FoodItem(models.Model):
     image = models.ImageField(upload_to='images/')  # Store in media folder
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # def __str__(self):
+    #     return f"{self.food_name} - {self.vendor.restaurant_name}"
     def __str__(self):
-        return f"{self.food_name} - {self.vendor.restaurant_name}"
-    
+        return f"{self.food_name}"
