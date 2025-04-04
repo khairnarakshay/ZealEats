@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import CanteenVendor,FoodItem
 # Register your models here.
 class CanteeVendorAdmin(admin.ModelAdmin):
-    list_display = ('id','full_name', 'restaurant_name', 'mobile_number', 'store_description', 'is_approved')
+    list_display = ('id','full_name', 'restaurant_name', 'mobile_number', 'store_description', 'is_approved','restaurant_name', 'password')
     list_filter = ("is_approved",)  # Filter to show approved/unapproved vendors
     search_fields = ("full_name",  "mobile_number")
     actions = ["approve_vendors"]
@@ -16,7 +16,7 @@ admin.site.register(CanteenVendor, CanteeVendorAdmin)
 
 
 class FoodItemAdmin(admin.ModelAdmin):
-    list_display = ('get_vendor_name', 'food_name', 'description', 'food_type', 'category', 'price', 'image', 'created_at')
+    list_display = ('id','get_vendor_name', 'food_name', 'description', 'food_type', 'category', 'price', 'image', 'created_at')
 
     def get_vendor_name(self, obj):
         return obj.vendor.restaurant_name
