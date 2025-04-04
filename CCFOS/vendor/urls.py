@@ -17,5 +17,6 @@ urlpatterns = [
     
     path("delete-item/<int:item_id>/", views.delete_item, name="delete-item"),
     path('account/', views.account, name='account'),
+    path('update-order-status/<int:order_id>/',views.update_order_status, name='update-order-status'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
