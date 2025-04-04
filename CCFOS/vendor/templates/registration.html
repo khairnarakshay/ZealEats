@@ -9,103 +9,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .navbar {
-            background-color: #007bff;
-        }
-
-        .navbar-brand {
-            color: white !important;
-        }
-
-        .navbar-nav .nav-link {
-            color: white !important;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffc107 !important;
-        }
-
-        .container {
+        .login-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            justify-content: space-between;
+            align-items: center;
         }
-
+        .welcome-section {
+            background-color: #f8f9fa;
+            padding: 40px;
+            width: 45%;
+        }
+        .login-section {
+            width: 45%;
+            padding: 40px;
+        }
         .card {
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            font-size: 1.75rem;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-
-        .form-control {
-            border-radius: 5px;
-            padding: 15px;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
+        .welcome-section h1 {
+            font-size: 2.5rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: #28a745;
-            border-color: #28a745;
-            padding: 12px;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
-
-        .footer-link {
             color: #007bff;
-            text-decoration: none;
         }
-
-        .footer-link:hover {
-            text-decoration: underline;
-        }
-
-        .alert {
-            margin-bottom: 1.5rem;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 576px) {
-            .card {
-                margin: 0 15px;
-            }
-
-            .card-header {
-                font-size: 1.5rem;
-            }
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: #495057;
         }
     </style>
 </head>
@@ -128,11 +58,14 @@
         </div>
     </nav>
 
-    <div class="container">
-        <div class="card shadow-lg">
-            <div class="card-header">
-                Register Your Canteen
-            </div>
+    <div class="container login-container">
+        <div class="welcome-section">
+            <h1>Welcome to the Canteen System!</h1>
+            <p>Experience hassle-free food ordering with a simple and efficient system for both students and canteen owners. Log in or register to get started!</p>
+        </div>
+        <div class="login-section">
+         <div class="card shadow-lg p-4">
+            <h3 class="text-center mb-4">Registration</h3>
             <div class="card-body">
                 {% if messages %}
                     {% for message in messages %}
@@ -167,7 +100,9 @@
                         <label class="form-label">Confirm Password</label>
                         <input type="password" class="form-control" name="confirm_password" required>
                     </div>
+                    <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">Register</button>
+                </div>
                 </form>
                 <div class="text-center mt-3">
                     <p>Already have an account? <a href="{% url 'login' %}" class="footer-link">Login</a></p>
@@ -180,3 +115,10 @@
 </body>
 
 </html>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

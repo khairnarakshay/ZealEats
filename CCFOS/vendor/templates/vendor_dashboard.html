@@ -27,148 +27,214 @@
     }
 </style>
 
-<div class="container mt-0">
-  <h3 class="mb-4 text-center font-weight-bold" style="font-size: 28px;">Admin Dashboard</h3>
 
-  <!-- Upper Dashboard -->
-  <div class="row text-center mb-4">
-      <div class="col-md-4">
-          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('orders')">
-              <h5>ORDERS</h5>
-          </div>
-      </div>
-      <div class="col-md-4">
-          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('cancelledOrders')">
-              <h5>CANCELLED ORDERS</h5>
-          </div>
-      </div>
-      <div class="col-md-4">
-          <div class="dashboard-card bg-white border rounded p-3" onclick="showData('pendingOrders')">
-              <h5>PENDING ORDERS</h5>
-          </div>
-      </div>
-  </div>
 
-  <!-- Lower Dashboard (Dynamic Content) -->
-  <div class="content-box">
-      <h5 id="lower-title" class="text-center">Select an option from the upper dashboard to display details here.</h5>
-      <div id="dashboard-content"></div>
-  </div>
+
+<div class="container mt-3">
+    <h3 class="mb-4 text-center font-weight-bold" style="font-size: 28px;">Admin Dashboard</h3>
+
+    <!-- Upper Dashboard -->
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card bg-white border rounded p-4" onclick="showData('allOrders')">
+                <h5>All ORDERS</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-white border rounded p-4" onclick="showData('orders')">
+                <h5>COMPLETED</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-white border rounded p-4" onclick="showData('cancelledOrders')">
+                <h5>CANCELLED ORDERS</h5>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card bg-white border rounded p-4" onclick="showData('pendingOrders')">
+                <h5>PENDING ORDERS</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lower Dashboard (Dynamic Content) -->
+    <div class="content-box">
+        
+        <h5 id="lower-title" class="text-center">Select an option from the upper dashboard to display details here.</h5>
+        
+        <!-- All Orders Table -->
+        <!-- when page is loded  default welcome message is displayed -->
+        
+
+        <div id="allOrders" class="data-table d-none">
+            {% if all_orders %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Update Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in all_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer }}</td>
+                                <td class="text-success font-weight-bold">{{ order.order_status }}</td>
+                                <td>₹{{ order.total_amount }}</td>
+                                <td>
+                                    {% if order.order_status != "Completed" %}
+                                        <form method="POST" action="{% url 'update-order-status' order.id %}">
+                                            {% csrf_token %}
+                                            <select name="status" class="form-control form-control-sm">
+                                                <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                                                <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
+                                                <option value="Completed" {% if order.status == "Completed" %}selected{% endif %}>Completed</option>
+                                                <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                            </select>
+                                </td>
+                                <td>
+                                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                        </form>
+                                    {% else %}
+                                </td>
+                                <td>
+                                    <span class="text-muted">Already Completed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center text-muted">No orders available.</p>
+            {% endif %}
+        </div>
+        
+          <!--  Orders Table -->
+        <div id="orders" class="data-table d-none">
+            {% if completed_orders %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in completed_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer }}</td>
+                                <td class="text-success font-weight-bold">{{ order.order_status }}</td>
+                                <td>₹{{ order.total_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center text-muted">No orders available.</p>
+            {% endif %}
+        </div>
+
+        <!-- Cancelled Orders Table -->
+        <div id="cancelledOrders" class="data-table d-none">
+            {% if cancelled_orders %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in cancelled_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer }}</td>
+                                <td class="text-danger font-weight-bold">{{ order.order_status }}</td>
+                                <td>₹{{ order.total_amount}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center text-muted">No cancelled orders.</p>
+            {% endif %}
+        </div>
+
+        <!-- Pending Orders Table -->
+        <div id="pendingOrders" class="data-table d-none">
+            {% if pending_orders %}
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>ETA</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in pending_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'update-order-status' order.id %}">
+                                        {% csrf_token %}
+                                        <select name="status" class="form-control form-control-sm">
+                                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                                            <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
+                                            <option value="Completed" {% if order.status == "Completed" %}selected{% endif %}>Completed</option>
+                                            <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                        </select>
+                                </td>
+                                <td>{{ order.eta }}</td>
+                                <td>
+                                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center text-muted">No pending orders.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
-
 <script>
-    function showData(category) {
-        let title = document.getElementById("lower-title");
-        let content = document.getElementById("dashboard-content");
+function showData(category) {
+    console.log("Button clicked:", category); // Debugging: Check if the function runs
 
-        let data = {
-            orders: `
-                <div class="w-full">
-    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
-        <thead class="bg-gray-800 text-white">
-            <tr>
-                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
-                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
-                <th class="py-2 px-2 md:px-4 text-left">Status</th>
-                <th class="py-2 px-2 md:px-4 text-left">Total</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-300">
-            <tr class="hover:bg-gray-100">
-                <td class="py-2 px-2 md:px-4">1001</td>
-                <td class="py-2 px-2 md:px-4">John Doe</td>
-                <td class="py-2 px-2 md:px-4 text-green-600 font-semibold">Completed</td>
-                <td class="py-2 px-2 md:px-4 font-semibold">₹15.99</td>
-            </tr>
-            <tr class="hover:bg-gray-100">
-                <td class="py-2 px-2 md:px-4">1002</td>
-                <td class="py-2 px-2 md:px-4">Jane Smith</td>
-                <td class="py-2 px-2 md:px-4 text-yellow-500 font-semibold">Pending</td>
-                <td class="py-2 px-2 md:px-4 font-semibold">₹9.49</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-            `,
-            cancelledOrders: `
-                <div class="w-full">
-    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
-        <thead class="bg-gray-800 text-white">
-            <tr>
-                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
-                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
-                <th class="py-2 px-2 md:px-4 text-left">Status</th>
-                <th class="py-2 px-2 md:px-4 text-left">Total</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-300">
-            <tr class="hover:bg-gray-100">
-                <td class="py-2 px-2 md:px-4">1001</td>
-                <td class="py-2 px-2 md:px-4">John Doe</td>
-                <td class="py-2 px-2 md:px-4 text-green-600 font-semibold">Completed</td>
-                <td class="py-2 px-2 md:px-4 font-semibold">₹15.99</td>
-            </tr>
-            <tr class="hover:bg-gray-100">
-                <td class="py-2 px-2 md:px-4">1002</td>
-                <td class="py-2 px-2 md:px-4">Jane Smith</td>
-                <td class="py-2 px-2 md:px-4 text-yellow-500 font-semibold">Pending</td>
-                <td class="py-2 px-2 md:px-4 font-semibold">₹9.49</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-            `,
-            pendingOrders: `
-                <div class="w-full">
-    <table class="w-full bg-white border border-gray-300 shadow-md rounded-lg">
-        <thead class="bg-gray-800 text-white">
-            <tr>
-                <th class="py-2 px-2 md:px-4 text-left">Order ID</th>
-                <th class="py-2 px-2 md:px-4 text-left">Customer</th>
-                <th class="py-2 px-2 md:px-4 text-left">Status</th>
-                <th class="py-2 px-2 md:px-4 text-left">ETA</th>
-                <th class="py-2 px-2 md:px-4 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-300">
-            {% for order in pending_orders %}
-            <tr class="hover:bg-gray-100">
-                <td class="py-2 px-2 md:px-4">{{ order.id }}1</td>
-                <td class="py-2 px-2 md:px-4">{{ order.customer }}Akshay</td>
-                <td class="py-2 px-2 md:px-4">
-                    <form method="POST" action="{% url 'update-order-status' order.id %}">
-                        {% csrf_token %}
-                        <select name="status" class="border border-gray-300 rounded-md px-2 py-1">
-                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
-                            <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
-                            <option value="Completed" {% if order.status == "Completed" %}selected{% endif %}>Completed</option>
-                            <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
-                        </select>
-                </td>
-                <td class="py-2 px-2 md:px-4 font-semibold">{{ order.eta }}</td>
-                <td class="py-2 px-2 md:px-4">
-                        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm">
-                            Update
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
-            `
-        };
-
-        title.innerHTML = category
-            .replace(/([A-Z])/g, " ")
-            .replace(/^./, str => str.toUpperCase());
-        content.innerHTML = data[category];
+    // Hide all tables
+    document.querySelectorAll('.data-table').forEach(table => table.classList.add('d-none'));
+    
+    // Show selected table
+    let selectedTable = document.getElementById(category);
+    if (selectedTable) {
+        selectedTable.classList.remove('d-none');
+        console.log("Showing table:", category); // Debugging: Check if the table is found
+    } else {
+        console.log("Table not found for:", category); // Debugging: Check if ID is correct
     }
+
+    // Update the title
+    let formattedTitle = category.replace(/([A-Z])/g, " ").replace(/^./, str => str.toUpperCase());
+    document.getElementById("lower-title").innerText = formattedTitle;
+}
 </script>
+
 
 {% endblock %}
