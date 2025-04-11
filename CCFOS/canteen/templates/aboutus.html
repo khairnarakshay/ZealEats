@@ -1,6 +1,67 @@
 {% extends "base/base.html" %}
-{% block content %}
+{% load static %}
 
-<h1>No DData Fount...!</h1>
+{% block username %}
+    {% if request.session.customer_id %}  <!-- Check if customer_id is in the session -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="true">
+                {{ customer_name }}  <!-- Assuming customer_name is passed to the template -->
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'customer_logout' %}">Logout</a></li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock username %}
+{% block content %}
+<style>
+    .drop-cap {
+        float: left;
+        font-size: 3rem;
+        font-weight: bold;
+        line-height: 1;
+        padding-right: 10px;
+        color: #0d6efd;
+    }
+
+    .clearfix::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Paragraph with Drop Cap -->
+    <div class="row">
+        <div class="col-12 clearfix">
+            <p class="fs-5">
+                <span class="drop-cap">S</span>
+                pacious and well-equipped canteen facility is available at Zeal campus. A complete and planned meal is served
+                in neat, clean and hygienic surroundings. Apart from north and south Indian nutritious breakfast, lunch and
+                dinner, Tea, coffee and soft drinks along with snacks are also available. All the items are reasonably priced.
+                Monthly Mess facility is also available for the students as well as staff members.
+            </p>
+        </div>
+    </div>
+</div>
+
+    <!-- Image Row Below Paragraph -->
+    <div class="row text-center mt-4">
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <img src="{% static 'images/image1.jpg' %}" alt="Canteen 1" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <img src="{% static 'images/image2.jpg' %}" alt="Canteen 2" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <img src="{% static 'images/image3.jpg' %}" alt="Canteen 3" class="img-fluid rounded shadow-sm">
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <img src="{% static 'images/image4.jpg' %}" alt="Canteen 4" class="img-fluid rounded shadow-sm">
+        </div>
+    </div>
+</div>
 
 {% endblock %}
