@@ -87,35 +87,43 @@
                 <!-- Cart item details will be appended here by JavaScript -->
             </div>
         
+                
             <!-- Payment Method Selection -->
             <div class="form-check mb-2">
-                <input class="form-check-input" type="radio" name="payment_method" value="credit_card" id="credit_card">
-                <label class="form-check-label" for="credit_card">Credit Card</label>
-            </div>
-            <div class="form-check mb-2">
-                <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
-                <label class="form-check-label" for="paypal">PayPal</label>
-            </div>
-        
-            <!-- Credit Card Details (Hidden by Default) -->
-            <div id="credit-card-details" style="display: none; margin-top: 10px;">
-                <label>Card Number:</label>
-                <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456">
-        
-                <label>Expiration Date:</label>
-                <input type="text" name="expiry_date" class="form-control" placeholder="MM/YY">
-        
-                <label>CVV:</label>
-                <input type="text" name="cvv" class="form-control" placeholder="123">
-            </div>
-        
-            <button type="submit" class="btn btn-success mt-3">Proceed to Pay</button>
-        </form>
-        
-        </div>
+              <input class="form-check-input" type="radio" name="payment_method" value="credit_card" id="credit_card">
+              <label class="form-check-label" for="credit_card">Credit Card</label>
+          </div>
+          <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
+              <label class="form-check-label" for="paypal">PayPal</label>
+          </div>
+      
+          <!-- Credit Card Details (Hidden by Default) -->
+          <div id="credit-card-details" style="display: none; margin-top: 10px;">
+              <label for="card_number">Card Number:</label>
+              <div class="input-group">
+                  <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456">
+              </div>
+      
+              <div class="d-flex">
+                  <div class="form-group mr-2" style="flex: 1;">
+                      <label for="expiry_date">Expiration Date:</label>
+                      <input type="text" name="expiry_date" class="form-control" placeholder="MM/YY">
+                  </div>
+                  <div class="form-group" style="flex: 1;">
+                      <label for="cvv">CVV:</label>
+                      <input type="text" name="cvv" class="form-control" placeholder="123">
+                  </div>
+              </div>
+          </div>
+      
+          <button type="submit" class="btn btn-success mt-3 w-100">Proceed to Pay</button>
+      </form>
+      
       </div>
     </div>
   </div>
+</div>
   
   <!-- jQuery Script -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

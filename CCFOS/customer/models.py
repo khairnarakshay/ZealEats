@@ -1,5 +1,5 @@
 from django.db import models
-from vendor.models import FoodItem
+from vendor.models import FoodItem, CanteenVendor
 from datetime import datetime
 
 # Create your models here.
@@ -48,7 +48,7 @@ class Order(models.Model):
         ('Paid', 'Paid'),
         ('Processing', 'Processing'),
         ('Shipped', 'Shipped'),
-        ('Delivered', 'Delivered'),
+        ('Completed ', 'Completed'),
         ('Cancelled', 'Cancelled'),
     ]
     
@@ -65,6 +65,8 @@ class Order(models.Model):
     food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE , null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     restaurant_name = models.CharField(max_length=100 , default="")
+    vendor = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE, null= True)  # Link to the restaurant
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Order for {self.customer.full_name} on {self.order_date}"

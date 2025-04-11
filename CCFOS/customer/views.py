@@ -616,6 +616,7 @@ def place_order(request):
 
         # Process only selected cart items
         for cart_item in cart.items.filter(id__in=selected_cart_item_ids):
+            vendor = cart_item.food_item.vendor  # This retrieves the CanteenVendor instance
             new_order = Order.objects.create(
                 customer=customer,
                 food_item=cart_item.food_item,
@@ -627,6 +628,8 @@ def place_order(request):
                 order_status="Pending",
                 payment_status="Pending",
                 is_paid=(payment_method == "Card"),
+               # vendor=cart_item.food_item.vendor.id,  # Assuming you have a vendor field in your Order model
+               vendor=vendor,  # Link to the vendor
             )
 
             print(f"Order Created: {new_order.id} for {cart_item.food_item.food_name}")

@@ -1,4 +1,5 @@
 
+
 <style>
     /* General styles for the printable receipt */
     .receipt-container {
@@ -140,9 +141,11 @@
         <p>Visit us again!</p>
     </div>
 
-    <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+    <button onclick="window.print()" class="btn btn-primary">Download Invoice</button>
     
 
-    <button onclick="window.location.href='{% url 'home' %}'" class="btn btn-secondary">Go to Home</button>
+    <button onclick="window.location.href='{% url 'view_orders' %}'" class="btn btn-secondary">View Orders</button>
 </div>
+
+
 

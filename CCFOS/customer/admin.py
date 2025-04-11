@@ -27,7 +27,7 @@ admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem, CartItemAdmin)
 
 class  OrderAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'order_date', 'total_amount', 'payment_method', 'payment_status', 'is_paid', 'order_status','quantity','price','food_item','restaurant_name')  # Fields to display in the Order admin list view
+    list_display = ('customer', 'order_date', 'total_amount', 'payment_method', 'payment_status', 'is_paid', 'order_status','quantity','price','food_item','restaurant_name','vendor')  # Fields to display in the Order admin list view
     search_fields = ('customer__full_name', 'payment_method')  # Allow searching by customer name and payment method
 
     

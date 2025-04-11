@@ -1,6 +1,8 @@
 
 {% extends "base/base.html" %}
+{% block title %}My Order{% endblock title %}
 {% block content %}
+
 <style>
     .order-container {
         max-width: 1100px;
@@ -128,7 +130,7 @@
             </div>
 
             <div class="order-footer">
-                <button onclick="window.open('{% url 'print_order_details' order.id %}', '_blank')" class="btn btn-print btn-sm">🖨️ Print Receipt</button>
+                <button onclick="window.open('{% url 'print_order_details' order.id %}', '_blank')" class="btn btn-print btn-sm">Download Invoice</button>
                 
                 {% if order.order_status == 'Pending' %}
                 <form method="POST" action="{% url 'cancel_order' order.id %}" class="order-action d-inline">
