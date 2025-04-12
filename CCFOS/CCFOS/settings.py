@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u4ha#y%j*jdd&2#=q-0+3*cmo%w3no#-a$ma@f-_@q9jv95co6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -159,3 +159,7 @@ EMAIL_HOST_PASSWORD = 'rttsqtmebittcvlf'  # Use an App Password (not your actual
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['khairnarakshay.pythonanywhere.com']
