@@ -158,3 +158,4 @@ EMAIL_HOST_PASSWORD = 'rttsqtmebittcvlf'  # Use an App Password (not your actual
 
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
