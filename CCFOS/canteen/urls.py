@@ -7,5 +7,5 @@ urlpatterns = [
     path('mycart/', views.MyCart, name='mycart'),
    # path('view_order/', views.view_order, name='view_order'),
     path('aboutus/', views.AboutUs, name='aboutus'),
-    path('contactus/', views.ContactUs, name='contactus'),
+    path('contactus/', views.Contactus, name='contactus'),
 ]

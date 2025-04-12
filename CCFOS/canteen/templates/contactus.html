@@ -139,31 +139,35 @@
                     <!-- Contact Form -->
                     <div class="col-lg-8">
                         <div class="contact-card p-4 p-md-5">
-                            <form>
+                            <form action="{% url 'contactus' %}" method="POST" class="needs-validation" novalidate>
+                                {% csrf_token %}
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="name" placeholder="Name">
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
                                             <label for="name">Your Name</label>
+                                            <div class="invalid-feedback">Please provide your name.</div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="email" class="form-control" id="email" placeholder="Email">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
                                             <label for="email">Your Email</label>
+                                            <div class="invalid-feedback">Please provide a valid email address.</div>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="subject" placeholder="Subject">
+                                            <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
                                             <label for="subject">Subject</label>
+                                            <div class="invalid-feedback">Please provide a subject.</div>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating">
-                                            <textarea class="form-control" placeholder="Message" 
-                                            id="message" style="height: 150px"></textarea>
+                                            <textarea class="form-control" name="message" placeholder="Message" id="message" style="height: 150px" required></textarea>
                                             <label for="message">Message</label>
+                                            <div class="invalid-feedback">Please provide a message.</div>
                                         </div>
                                     </div>
                                     <div class="col-12 text-center">
@@ -173,6 +177,7 @@
                                     </div>
                                 </div>
                             </form>
+                            
                         </div>
                     </div>
                 </div>
