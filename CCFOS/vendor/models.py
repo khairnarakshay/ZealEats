@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class CanteenVendor(models.Model):
     id = models.AutoField(primary_key=True)
@@ -31,3 +32,46 @@ class FoodItem(models.Model):
     #     return f"{self.food_name} - {self.vendor.restaurant_name}"
     def __str__(self):
         return f"{self.food_name}"
+    
+    
+# class OfflineOrder(models.Model):
+#     vendor = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE)
+#     PAYMENT_CHOICES = (
+#         ('Cash', 'Cash'),
+#         ('Online', 'Online'),
+#     )
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     payment_mode = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
+
+#     def __str__(self):
+#         return f"Token #{self.id} - {self.created_at.strftime('%d-%m-%Y %H:%M')}"
+    
+    
+    
+# class OfflineOrderItem(models.Model):
+#     order = models.ForeignKey(OfflineOrder, on_delete=models.CASCADE, related_name='items')
+#     food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE)
+#     quantity = models.PositiveIntegerField()
+#     price = models.DecimalField(max_digits=6, decimal_places=2)
+#     total_amount = models.DecimalField(max_digits=8, decimal_places=2)
+
+#     def __str__(self):
+#         return f"{self.food_item.food_name} x {self.quantity}"
+
+
+class OfflineOrder(models.Model):
+    PAYMENT_CHOICES = (
+        ('Cash', 'Cash'),
+        ('Online', 'Online'),
+    )
+
+    vendor = models.ForeignKey(CanteenVendor, on_delete=models.CASCADE, null=True)
+    food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE, null=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    quantity = models.PositiveIntegerField(default=1)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='Cash')
+    order_date = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return f"{self.food_item} - {self.quantity} x ₹{self.price} = ₹{self.total_amount}"

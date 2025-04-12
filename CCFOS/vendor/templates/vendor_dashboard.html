@@ -66,6 +66,7 @@
         <!-- when page is loded  default welcome message is displayed -->
         
 
+       
         <div id="allOrders" class="data-table d-none">
             {% if all_orders %}
                 <table class="table table-bordered">
@@ -73,10 +74,13 @@
                         <tr>
                             <th>Order ID</th>
                             <th>Customer</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
                             <th>Status</th>
                             <th>Total</th>
                             <th>Update Status</th>
                             <th>Actions</th>
+                            <th>Updated At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,10 +88,12 @@
                             <tr>
                                 <td>{{ order.id }}</td>
                                 <td>{{ order.customer }}</td>
+                                <td>{{order.food_item }}</td>
+                                <td>{{ order.quantity }}</td>
                                 <td class="text-success font-weight-bold">{{ order.order_status }}</td>
                                 <td>₹{{ order.total_amount }}</td>
                                 <td>
-                                    {% if order.order_status != "Completed" %}
+                                    {% if order.order_status != "Completed" and order.order_status != "Cancelled" %}
                                         <form method="POST" action="{% url 'update-order-status' order.id %}">
                                             {% csrf_token %}
                                             <select name="status" class="form-control form-control-sm">
@@ -106,6 +112,7 @@
                                     <span class="text-muted">Already Completed</span>
                                     {% endif %}
                                 </td>
+                                <td>{{ order.updated_at}} </td>
                             </tr>
                         {% endfor %}
                     </tbody>

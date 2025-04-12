@@ -1,0 +1,164 @@
+{% extends 'base1/base.html' %}
+
+{% block title %}Dashboard - ZEAL CANTEEN{% endblock %}
+
+{% block content %}
+
+{% load static %}
+{% load static %}
+
+    <title>Offline Order Token</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+        .form-section, .receipt-section {
+            flex: 1;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            background: #f9f9f9;
+        }
+        .receipt-section {
+            background: #ffffff;
+            border: 2px dashed #ccc;
+        }
+        .order-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .order-row select, .order-row input {
+            padding: 8px;
+            width: 100%;
+        }
+        .add-btn {
+            margin: 10px 0;
+            padding: 6px 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .submit-btn {
+            padding: 10px 16px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .print-btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .receipt-table th, .receipt-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .receipt-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        function addRow() {
+            const container = document.getElementById('order-items');
+            const row = document.createElement('div');
+            row.className = 'order-row';
+            row.innerHTML = `
+                <select name="food_item[]" required>
+                    {% for item in food_items %}
+                        <option value="{{ item.id }}">{{ item.food_name }} - ₹{{ item.price }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="quantity[]" value="1" min="1" required>
+            `;
+            container.appendChild(row);
+        }
+
+        function printReceipt() {
+            const content = document.getElementById('receipt').innerHTML;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Print Receipt</title></head><body>' + content + '</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</head>
+<body>
+    <!-- Form Section -->
+    <div class="form-section">
+        <h2>Offline Order Token</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div id="order-items">
+                <div class="order-row">
+                    <select name="food_item[]" required>
+                        {% for item in food_items %}
+                            <option value="{{ item.id }}">{{ item.food_name }} - ₹{{ item.price }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="quantity[]" value="1" min="1" required>
+                </div>
+            </div>
+            <button type="button" class="add-btn" onclick="addRow()">+ Add Another Item</button><br>
+
+            <label>Payment Method:</label><br>
+            <input type="radio" name="payment_method" value="Cash" checked> Cash
+            <input type="radio" name="payment_method" value="Online"> Online<br><br>
+
+            <button type="submit" class="submit-btn">Generate Token</button>
+        </form>
+    </div>
+
+    <!-- Receipt Section -->
+    {% if show_receipt %}
+    <div class="receipt-section" id="receipt">
+        <h3>Receipt {{order.food_item.vendor.restaurant_name}}</h3>
+        <table class="receipt-table">
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.food_item.food_name }}</td>
+                <td>₹{{ order.price }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>₹{{ order.total_amount }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3"><strong>Grand Total</strong></td>
+                <td><strong>₹{{ grand_total }}</strong></td>
+            </tr>
+        </table>
+        <p><strong>Payment Mode:</strong> {{ orders.0.payment_method }}</p>
+        <p><strong>Order Date:</strong> {{ orders.0.order_date|date:"d M Y, h:i A" }}</p>
+        
+
+        <button class="print-btn" onclick="printReceipt()">🖨️ Print Receipt</button>
+
+        
+    </div>
+    {% endif %}
+
+
+
+{%endblock%}

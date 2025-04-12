@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CanteenVendor,FoodItem
+from .models import CanteenVendor,FoodItem, OfflineOrder
 # Register your models here.
 class CanteeVendorAdmin(admin.ModelAdmin):
     list_display = ('id','full_name', 'restaurant_name', 'mobile_number', 'store_description', 'is_approved','restaurant_name', 'password')
@@ -26,3 +26,14 @@ class FoodItemAdmin(admin.ModelAdmin):
 
 
 admin.site.register(FoodItem, FoodItemAdmin)
+
+class OfflineOrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'vendor', 'order_date','food_item','price','quantity','total_amount' ,'payment_method')
+    # Allows searching by vendor name
+
+admin.site.register(OfflineOrder, OfflineOrderAdmin)
+
+# class OfflineOrderItemAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'order', 'food_item', 'quantity', 'price')
+#     list_filter = ('order__vendor',)  # Filter to show orders by vendor
+# admin.site.register(OfflineOrderItem, OfflineOrderItemAdmin)

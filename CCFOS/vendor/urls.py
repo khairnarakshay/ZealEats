@@ -9,14 +9,18 @@ urlpatterns = [
     path('logout/', views.vendor_logout, name='logout'),
     path('register/', views.register_view, name='register'),  # New registration URL
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('order/', views.order, name='order'),
+    path('admin/statistics/', views.admin_statistics, name='admin_statistics'),
+    path('admin/statistics-offline/', views.admin_statistics_offline, name='admin_statistics_offline'),
+    #path('order/', views.order, name='order'),
     path('additems/', views.additems, name='additems'),
     path('manage-items/', views.manage_items, name='manage_items'),
     # path("update-items/<int:id>",views.update_items, name="update-item"),
     path('update-item/<int:id>/', views.update_items, name='update-item'),
     
     path("delete-item/<int:item_id>/", views.delete_item, name="delete-item"),
-    path('account/', views.account, name='account'),
+    path('account/', views.vendor_update_profile, name='account'),
     path('update-order-status/<int:order_id>/',views.update_order_status, name='update-order-status'),
-    
+   # path('admin/statistics/pdf/', views.generate_statistics_pdf, name='generate_statistics_pdf'),
+    path('download/statistics/pdf/', views.download_statistics_pdf, name='download_statistics_pdf'),
+    path('offline-order/', views.create_offline_order, name='create_offline_order'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
