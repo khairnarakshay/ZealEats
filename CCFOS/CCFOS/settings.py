@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'canteen',
     'vendor',
     'customer',
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    
+    'corsheaders.middleware.CorsMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
    # 'vendor.middleware.PreventVendorInAdminMiddleware',  #middelweare to prevent session conflict
@@ -153,3 +154,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'khairnarakshay1722@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'rttsqtmebittcvlf'  # Use an App Password (not your actual password)
+
+
+TIME_ZONE = 'Asia/Kolkata'
+USE_TZ = True
