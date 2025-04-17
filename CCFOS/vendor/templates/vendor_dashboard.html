@@ -200,16 +200,17 @@
                                     <form method="POST" action="{% url 'update-order-status' order.id %}">
                                         {% csrf_token %}
                                         <select name="status" class="form-control form-control-sm">
-                                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                                            {% if order.status != "Processing" %}
+                                                <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                                            {% endif %}
                                             <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
                                             <option value="Completed" {% if order.status == "Completed" %}selected{% endif %}>Completed</option>
                                             <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
                                         </select>
-                                </td>
-                                <td>{{ order.eta }}</td>
-                                <td>
                                         <button type="submit" class="btn btn-primary btn-sm">Update</button>
                                     </form>
+                                    
+                                    
                                 </td>
                             </tr>
                         {% endfor %}
@@ -222,25 +223,30 @@
     </div>
 </div>
 <script>
-function showData(category) {
-    console.log("Button clicked:", category); // Debugging: Check if the function runs
+    document.addEventListener('DOMContentLoaded', function () {
+        // Show All Orders by default when the page loads
+        showData('allOrders');
+    });
 
-    // Hide all tables
-    document.querySelectorAll('.data-table').forEach(table => table.classList.add('d-none'));
-    
-    // Show selected table
-    let selectedTable = document.getElementById(category);
-    if (selectedTable) {
-        selectedTable.classList.remove('d-none');
-        console.log("Showing table:", category); // Debugging: Check if the table is found
-    } else {
-        console.log("Table not found for:", category); // Debugging: Check if ID is correct
+    function showData(category) {
+        console.log("Button clicked:", category); // Debugging: Check if the function runs
+
+        // Hide all tables
+        document.querySelectorAll('.data-table').forEach(table => table.classList.add('d-none'));
+        
+        // Show selected table
+        let selectedTable = document.getElementById(category);
+        if (selectedTable) {
+            selectedTable.classList.remove('d-none');
+            console.log("Showing table:", category); // Debugging: Check if the table is found
+        } else {
+            console.log("Table not found for:", category); // Debugging: Check if ID is correct
+        }
+
+        // Update the title
+        let formattedTitle = category.replace(/([A-Z])/g, " ").replace(/^./, str => str.toUpperCase());
+        document.getElementById("lower-title").innerText = formattedTitle;
     }
-
-    // Update the title
-    let formattedTitle = category.replace(/([A-Z])/g, " ").replace(/^./, str => str.toUpperCase());
-    document.getElementById("lower-title").innerText = formattedTitle;
-}
 </script>
 
 
