@@ -42,10 +42,11 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: red;">
             <div class="container-fluid">
-                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                    <img src="{% static 'images/logo.png' %}" alt="Logo" width="40" height="40" class="me-2">
-                    Food Delivery
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.5rem; color: white;">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" width="45" height="45" class="rounded shadow-sm" style="border: 2px solid white;">
+                    <span style="letter-spacing: 1px;">Zeal<span style="color: #ffc107;">Eats</span></span>
                 </a>
+                
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                     aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -74,15 +75,25 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
+    <footer class="bg-dark text-white text-center py-4 mt-auto shadow-lg">
         <div class="container">
-            <p>&copy; 2025 Food Delivery. All rights reserved.</p>
-            <p>
-                <a href="#" class="text-white text-decoration-none mx-2">Privacy Policy</a> |
-                <a href="#" class="text-white text-decoration-none mx-2">Terms of Service</a>
+            <p class="mb-2 fw-semibold">&copy; 2025 <span class="text-warning">ZealEats</span>. All rights reserved.</p>
+            
+            <p class="mb-2">
+                <a href="/privacy" class="text-white text-decoration-none mx-2 footer-link">Privacy Policy</a> |
+                <a href="/terms" class="text-white text-decoration-none mx-2 footer-link">Terms of Service</a> |
+                <a href="/contactus" class="text-white text-decoration-none mx-2 footer-link">Contact Us</a>
             </p>
+            
+            <div class="mb-1">
+                <a href="https://www.facebook.com/ZealInstitutes" class="text-white mx-2 footer-link" target="_blank"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="https://www.instagram.com/zeal_edu_society" class="text-white mx-2 footer-link" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://www.twitter.com/ZealEats" class="text-white mx-2 footer-link" target="_blank"><i class="fab fa-twitter fa-lg"></i></a>
+                <a href="https://www.linkedin.com/company/zeal-institutes" class="text-white mx-2 footer-link" target="_blank"><i class="fab fa-linkedin fa-lg"></i></a>
+            </div>
         </div>
     </footer>
+    
 
     <!-- Bootstrap Bundle JS (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,19 +1,7 @@
 {% extends "base/base.html" %}
 {% load static %}
 {% block title %}AboutUs{% endblock title %}
-{% block username %}
-    {% if request.session.customer_id %}  <!-- Check if customer_id is in the session -->
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="true">
-                {{ customer_name }}  <!-- Assuming customer_name is passed to the template -->
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
-                <li><a class="dropdown-item" href="{% url 'customer_logout' %}">Logout</a></li>
-            </ul>
-        </div>
-    {% endif %}
-{% endblock username %}
+
 {% block content %}
 <style>
     .drop-cap {
