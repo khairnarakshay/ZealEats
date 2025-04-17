@@ -9,18 +9,20 @@
 {% endblock login %}
 
 {% block username %}
-    {% if request.session.customer_id %}  <!-- Check if customer_id is in the session -->
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="true">
-                {{ customer_name }}  <!-- Assuming customer_name is passed to the template -->
+    {% if request.session.customer_id %}
+        <div class="dropdown w-100">
+            <button class="btn w-100 dropdown-toggle" style="background-color: #f8f9fa; color: #333;" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ customer_name }}
             </button>
-            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <ul class="dropdown-menu w-100" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
                 <li><a class="dropdown-item" href="{% url 'customer_logout' %}">Logout</a></li>
             </ul>
         </div>
     {% endif %}
 {% endblock username %}
+
+
 
 {% block content %}
 

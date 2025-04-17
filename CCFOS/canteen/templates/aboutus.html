@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
 {% load static %}
-
+{% block title %}AboutUs{% endblock title %}
 {% block username %}
     {% if request.session.customer_id %}  <!-- Check if customer_id is in the session -->
         <div class="dropdown">
