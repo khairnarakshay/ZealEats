@@ -1,6 +1,7 @@
 from django.db import models
 from customer.models import Customer
 from vendor.models import FoodItem
+from django.db.models import Avg
 
 # Create your models here.
 class ContactUs(models.Model):
@@ -13,12 +14,15 @@ class ContactUs(models.Model):
     def __str__(self):
         return self.name
     
-class Rating(models.Model):
+class FoodRating(models.Model):
+    food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE, related_name='ratings')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE)
-    stars = models.IntegerField(default=0)  # values from 1 to 5
+    rating = models.PositiveIntegerField(default=0)  # 1 to 5
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('customer', 'food_item')  # One rating per customer per food
-    
+        unique_together = ('food_item', 'customer') 
+        
+    # @property
+    # def average_rating(self):
+    #     return self.ratings.aggregate(Avg('rating'))['rating__avg'] or 0

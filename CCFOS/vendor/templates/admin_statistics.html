@@ -68,6 +68,9 @@
                 <a href="{% url 'download_statistics_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}{% if request.GET.show_all %}&show_all=1{% endif %}" class="btn btn-danger mt-4">
                     Download PDF Report 📄
                 </a>
+                <a href="{% url 'download_excel_report' %}?from_date={{ from_date }}&to_date={{ to_date }}{% if request.GET.show_all %}&show_all=1{% endif %}" class="btn btn-success mt-4">
+                    Download CSV Report 📊
+                </a>
             </div>
         </form>
         

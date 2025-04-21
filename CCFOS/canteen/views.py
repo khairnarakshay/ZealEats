@@ -1,7 +1,10 @@
 from django.shortcuts import render
+#import json
+from django.http import JsonResponse
 from vendor.models import FoodItem , CanteenVendor
 from customer.models import Customer 
-from .models import ContactUs
+
+from .models import ContactUs 
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
@@ -50,9 +53,9 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
-from .models import ContactUs
+from .models import ContactUs, FoodRating
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import FoodItem, Rating
+from .models import FoodItem
 import re
 
 def Contactus(request):
@@ -95,20 +98,19 @@ def Contactus(request):
 
 
 
-def rate_food(request, food_id):
-    food = get_object_or_404(FoodItem, id=food_id)
-
-    if request.method == 'POST':
-        stars = int(request.POST.get('stars'))
-        customer_id = request.session.get('customer_id')
-
-        if customer_id and stars:
-            Rating.objects.create(
-                food=food,
-                customer_id=customer_id,
-                stars=stars
-            )
-            return redirect('rate_food', food_id=food.id)
-
-    return render(request, 'your_app/food_detail.html', {'food': food})
-
+def submit_rating(request, food_id):
+   
+    if request.method == 'POST' and request.session.get('customer_id'):
+        food_item = FoodItem.objects.get(id=food_id)
+        rating_value = int(request.POST.get('rating'))
+        customer_id = request.session['customer_id']
+        
+        rating_obj, created = FoodRating.objects.update_or_create(
+            food_item=food_item,
+            customer_id=customer_id,
+            defaults={'rating': rating_value}
+        )
+        return JsonResponse({'success': True, 'rating': rating_value})
+    
+        
+    return JsonResponse({'success': False}, status=400)

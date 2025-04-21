@@ -15,6 +15,7 @@
             gap: 20px;
             padding: 20px;
         }
+        
         .form-section, .receipt-section {
             flex: 1;
             padding: 20px;
@@ -73,6 +74,35 @@
         .receipt-table th {
             background-color: #f2f2f2;
         }
+        .receipt-section {
+        position: relative;
+        z-index: 1;
+        }
+
+        .receipt-section {
+        position: relative;
+        z-index: 1;
+        background-color: #ffffff; /* Ensure content has a white background */
+        padding: 20px;
+        border: 2px dashed #ccc;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .watermark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 70%;
+        height: 100%;
+        background-image: url("{% static 'images/canteen_logo2.png' %}");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        opacity: 0.1;
+        z-index: 0;
+        }
+
     </style>
     <script>
         function addRow() {
@@ -125,39 +155,38 @@
         </form>
     </div>
 
-    <!-- Receipt Section -->
-    {% if show_receipt %}
-    <div class="receipt-section" id="receipt">
-        <h3>Receipt {{order.food_item.vendor.restaurant_name}}</h3>
-        <table class="receipt-table">
-            <tr>
-                <th>Item</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Total</th>
-            </tr>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.food_item.food_name }}</td>
-                <td>₹{{ order.price }}</td>
-                <td>{{ order.quantity }}</td>
-                <td>₹{{ order.total_amount }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="3"><strong>Grand Total</strong></td>
-                <td><strong>₹{{ grand_total }}</strong></td>
-            </tr>
-        </table>
-        <p><strong>Payment Mode:</strong> {{ orders.0.payment_method }}</p>
-        <p><strong>Order Date:</strong> {{ orders.0.order_date|date:"d M Y, h:i A" }}</p>
-        
+   <!-- Receipt Section -->
+{% if show_receipt %}
+<div class="receipt-section position-relative" id="receipt">
+<div class="watermark"></div>
+  <h3>Receipt {{ order.food_item.vendor.restaurant_name }}</h3>
+    <table class="receipt-table">
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.food_item.food_name }}</td>
+            <td>₹{{ order.price }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>₹{{ order.total_amount }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3"><strong>Grand Total</strong></td>
+            <td><strong>₹{{ grand_total }}</strong></td>
+        </tr>
+    </table>
+    <p><strong>Payment Mode:</strong> {{ orders.0.payment_method }}</p>
+    <p><strong>Order Date:</strong> {{ orders.0.order_date|date:"d M Y, h:i A" }}</p>
+    
+</div>
+<button class="print-btn" onclick="printReceipt()">🖨️ Print Receipt</button>
+{% endif %}
 
-        <button class="print-btn" onclick="printReceipt()">🖨️ Print Receipt</button>
-
-        
-    </div>
-    {% endif %}
 
 
 

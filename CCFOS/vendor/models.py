@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.db.models import Avg
 
 class CanteenVendor(models.Model):
     id = models.AutoField(primary_key=True)
@@ -30,6 +31,11 @@ class FoodItem(models.Model):
 
     # def __str__(self):
     #     return f"{self.food_name} - {self.vendor.restaurant_name}"
+    @property
+    def average_rating(self):
+        avg = self.ratings.aggregate(avg_rating=Avg('rating'))['avg_rating']
+        return round(avg, 1) if avg else 0
+    
     def __str__(self):
         return f"{self.food_name}"
     

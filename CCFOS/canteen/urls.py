@@ -8,5 +8,6 @@ urlpatterns = [
    # path('view_order/', views.view_order, name='view_order'),
     path('aboutus/', views.AboutUs, name='aboutus'),
     path('contactus/', views.Contactus, name='contactus'),
-    #path('food/<int:food_id>/rate/', views.rate_food, name='rate_food'),
+    path('rate/<int:food_id>/', views.submit_rating, name='submit_rating'),
+
 ]
