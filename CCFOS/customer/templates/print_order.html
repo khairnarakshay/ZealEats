@@ -1,5 +1,5 @@
 
-
+{% load static %}
 <style>
     /* General styles for the printable receipt */
     .receipt-container {
@@ -10,6 +10,9 @@
         border: 2px solid #333;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        position: relative;
+        z-index: 1;
         background: #fff;
     }
 
@@ -77,15 +80,31 @@
 
     /* Print styles */
     @media print {
-        button {
-            display: none; /* Hide print button */
-        }
-
-        .receipt-container {
-            border: none;
-            box-shadow: none;
-        }
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
+
+    button {
+        display: none;
+    }
+
+    .receipt-container::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        background: url('{% static "images/canteen_logo2.png" %}') no-repeat center center;
+        background-size: 300px;
+        width: 300px;
+        height: 300px;
+        opacity: 0.1;
+        z-index: 0;
+        pointer-events: none;
+    }
+}
+
 </style>
 
 <div class="receipt-container">
