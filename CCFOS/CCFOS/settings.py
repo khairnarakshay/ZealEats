@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'canteen',
     'vendor',
     'customer',
+   
+    
 ]
 
 MIDDLEWARE = [
