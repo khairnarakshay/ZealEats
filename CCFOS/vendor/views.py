@@ -771,7 +771,7 @@ def download_excel_report(request):
         order_status='Completed',
         order_date__date__range=(from_date, to_date)
     )
-
+    
     food_stats = (
         orders
         .values('food_item__food_name')
@@ -799,6 +799,7 @@ def download_excel_report(request):
             item['total_quantity'],
             float(item['total_earned']),
         ])
+    
 
     # Auto column width
     for col in ws.columns:

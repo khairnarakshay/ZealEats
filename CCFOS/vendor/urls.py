@@ -22,5 +22,6 @@ urlpatterns = [
     path('update-order-status/<int:order_id>/',views.update_order_status, name='update-order-status'),
    # path('admin/statistics/pdf/', views.generate_statistics_pdf, name='generate_statistics_pdf'),
     path('download/statistics/pdf/', views.download_statistics_pdf, name='download_statistics_pdf'),
+    path('download_excel_report', views.download_excel_report, name='download_excel_report'),
     path('offline-order/', views.create_offline_order, name='create_offline_order'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
