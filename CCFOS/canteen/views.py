@@ -51,6 +51,8 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
 from .models import ContactUs
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import FoodItem, Rating
 import re
 
 def Contactus(request):
@@ -93,5 +95,20 @@ def Contactus(request):
 
 
 
+def rate_food(request, food_id):
+    food = get_object_or_404(FoodItem, id=food_id)
 
+    if request.method == 'POST':
+        stars = int(request.POST.get('stars'))
+        customer_id = request.session.get('customer_id')
+
+        if customer_id and stars:
+            Rating.objects.create(
+                food=food,
+                customer_id=customer_id,
+                stars=stars
+            )
+            return redirect('rate_food', food_id=food.id)
+
+    return render(request, 'your_app/food_detail.html', {'food': food})
 
