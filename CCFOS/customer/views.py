@@ -549,6 +549,104 @@ def remove_from_cart(request, cart_item_id):
 
     return JsonResponse({"success": False, "error": "Invalid request"})
 
+# def place_order(request):
+#     customer_id = request.session.get("customer_id")
+    
+#     if not customer_id:
+#         messages.error(request, "You must be logged in to place an order.")
+#         return redirect("customer_login")
+
+#     customer = get_object_or_404(Customer, id=customer_id)
+#     print("Customer Name:", customer.full_name)
+    
+#     cart = Cart.objects.filter(customer=customer).first()
+
+#     if not cart or not cart.items.exists():
+#         messages.error(request, "Your cart is empty. Add items before ordering.")
+#         return redirect("view_cart")
+
+#     if request.method == "POST":
+#         payment_method = request.POST.get("payment_method")
+#         total_amount = request.POST.get("total_amount")
+        
+#         # Use get to retrieve the comma-separated string and split it into a list
+#         selected_cart_item_ids = request.POST.get("selected_item_ids", "").split(",")
+#         print("Selected Cart Item IDs (frontend):", selected_cart_item_ids)
+
+#         # Filter out empty strings and non-integer values
+#         selected_cart_item_ids = [item_id for item_id in selected_cart_item_ids if item_id.isdigit()]
+#         print("Selected Cart Item IDs (backend):", selected_cart_item_ids)
+
+#         if not selected_cart_item_ids:
+#             messages.error(request, "No valid items selected. Please add items to the cart before placing an order.")
+#             return redirect("view_cart")
+
+#         try:
+#             total_amount = Decimal(total_amount)
+#         except:
+#             messages.error(request, "Invalid amount format.")
+#             return redirect("view_cart")
+
+#         if not payment_method:
+#             messages.error(request, "Please select a payment method.")
+#             return redirect("view_cart")
+
+#         # Process card details if Card payment is selected
+#         if payment_method == "Card":
+#             card_number = request.POST.get("card_number", "").strip()
+#             card_holder = request.POST.get("card_holder", "").strip()
+#             expiry_date = request.POST.get("expiry_date", "").strip()
+#             cvv = request.POST.get("cvv", "").strip()
+
+#             if len(card_number) != 16 or not card_number.isdigit():
+#                 messages.error(request, "Invalid Card Number.")
+#                 return redirect("view_cart")
+
+#             if not card_holder:
+#                 messages.error(request, "Card Holder Name is required.")
+#                 return redirect("view_cart")
+
+#             if not expiry_date or not re.match(r"^(0[1-9]|1[0-2])\/\d{2}$", expiry_date):
+#                 messages.error(request, "Invalid Expiry Date format (MM/YY).")
+#                 return redirect("view_cart")
+
+#             if len(cvv) != 3 or not cvv.isdigit():
+#                 messages.error(request, "Invalid CVV.")
+#                 return redirect("view_cart")
+
+#         # Process only selected cart items
+#         for cart_item in cart.items.filter(id__in=selected_cart_item_ids):
+#             vendor = cart_item.food_item.vendor  # This retrieves the CanteenVendor instance
+#             new_order = Order.objects.create(
+#                 customer=customer,
+#                 food_item=cart_item.food_item,
+#                 quantity=cart_item.quantity,
+#                 price=cart_item.price,
+#                 restaurant_name=cart_item.food_item.vendor.restaurant_name,
+#                 total_amount=cart_item.price * cart_item.quantity,
+#                 payment_method=payment_method,
+#                 order_status="Pending",
+#                 payment_status="Pending",
+#                 is_paid=(payment_method == "Card"),
+#                # vendor=cart_item.food_item.vendor.id,  # Assuming you have a vendor field in your Order model
+#                vendor=vendor,  # Link to the vendor
+#             )
+
+#             print(f"Order Created: {new_order.id} for {cart_item.food_item.food_name}")
+#             cart_item.delete()  # Remove the cart item after order is created
+
+#         messages.success(request, "Order placed successfully!")
+#         return redirect("order_success")
+
+from decimal import Decimal
+import re
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.db import transaction
+from .models import Customer, Cart, Order  # Adjust imports as per your project structure
+
+
 def place_order(request):
     customer_id = request.session.get("customer_id")
     
@@ -558,7 +656,7 @@ def place_order(request):
 
     customer = get_object_or_404(Customer, id=customer_id)
     print("Customer Name:", customer.full_name)
-    
+
     cart = Cart.objects.filter(customer=customer).first()
 
     if not cart or not cart.items.exists():
@@ -567,15 +665,11 @@ def place_order(request):
 
     if request.method == "POST":
         payment_method = request.POST.get("payment_method")
-        total_amount = request.POST.get("total_amount")
-        
-        # Use get to retrieve the comma-separated string and split it into a list
-        selected_cart_item_ids = request.POST.get("selected_item_ids", "").split(",")
-        print("Selected Cart Item IDs (frontend):", selected_cart_item_ids)
+        total_amount = request.POST.get("total_amount", "0")
 
-        # Filter out empty strings and non-integer values
+        selected_cart_item_ids = request.POST.get("selected_item_ids", "").split(",")
         selected_cart_item_ids = [item_id for item_id in selected_cart_item_ids if item_id.isdigit()]
-        print("Selected Cart Item IDs (backend):", selected_cart_item_ids)
+        print("Selected Cart Item IDs:", selected_cart_item_ids)
 
         if not selected_cart_item_ids:
             messages.error(request, "No valid items selected. Please add items to the cart before placing an order.")
@@ -591,7 +685,6 @@ def place_order(request):
             messages.error(request, "Please select a payment method.")
             return redirect("view_cart")
 
-        # Process card details if Card payment is selected
         if payment_method == "Card":
             card_number = request.POST.get("card_number", "").strip()
             card_holder = request.POST.get("card_holder", "").strip()
@@ -614,29 +707,71 @@ def place_order(request):
                 messages.error(request, "Invalid CVV.")
                 return redirect("view_cart")
 
-        # Process only selected cart items
-        for cart_item in cart.items.filter(id__in=selected_cart_item_ids):
-            vendor = cart_item.food_item.vendor  # This retrieves the CanteenVendor instance
-            new_order = Order.objects.create(
-                customer=customer,
-                food_item=cart_item.food_item,
-                quantity=cart_item.quantity,
-                price=cart_item.price,
-                restaurant_name=cart_item.food_item.vendor.restaurant_name,
-                total_amount=cart_item.price * cart_item.quantity,
-                payment_method=payment_method,
-                order_status="Pending",
-                payment_status="Pending",
-                is_paid=(payment_method == "Card"),
-               # vendor=cart_item.food_item.vendor.id,  # Assuming you have a vendor field in your Order model
-               vendor=vendor,  # Link to the vendor
-            )
+        selected_items = cart.items.filter(id__in=selected_cart_item_ids)
+        if not selected_items.exists():
+            messages.error(request, "No matching items found in the cart.")
+            return redirect("view_cart")
 
-            print(f"Order Created: {new_order.id} for {cart_item.food_item.food_name}")
-            cart_item.delete()  # Remove the cart item after order is created
+        order_list = []
+
+        with transaction.atomic():
+            for cart_item in selected_items:
+                vendor = cart_item.food_item.vendor
+                new_order = Order.objects.create(
+                    customer=customer,
+                    food_item=cart_item.food_item,
+                    quantity=cart_item.quantity,
+                    price=cart_item.price,
+                    restaurant_name=vendor.restaurant_name,
+                    total_amount=cart_item.price * cart_item.quantity,
+                    payment_method=payment_method,
+                    order_status="Pending",
+                    payment_status="Pending",
+                    is_paid=(payment_method == "Card"),
+                    vendor=vendor,
+                )
+                order_list.append(new_order)
+                cart_item.delete()
+
+        order_details = "\n".join([
+            f"{order.food_item.food_name}(Qty: {order.quantity}) - ₹{order.price * order.quantity}"
+            for order in order_list
+        ])
+        total_final_amount = sum(order.total_amount for order in order_list)
+
+        email_subject = "Your Order Confirmation"
+        email_body = f"""Hello {customer.full_name},
+
+Thank you for your order! Here are your order details:
+Order ID: {order_list[0].id}
+{order_details}
+
+Total Amount: ₹{total_final_amount}
+Payment Method: {payment_method}
+Order Status: Pending
+
+We'll notify you once your order is confirmed.
+
+Best regards,
+{vendor.restaurant_name}
+ZealEats Team
+Zeal College Canteen
+"""
+
+        send_mail(
+            email_subject,
+            email_body,
+            "khairnarakshay1722@gmail.com",  # Replace with settings.DEFAULT_FROM_EMAIL if needed
+            [customer.email],
+            fail_silently=False,
+        )
 
         messages.success(request, "Order placed successfully!")
         return redirect("order_success")
+
+    messages.error(request, "Invalid request method.")
+    return redirect("view_cart")
+
     
     
 def view_orders(request):
