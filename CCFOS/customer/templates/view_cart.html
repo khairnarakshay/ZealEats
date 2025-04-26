@@ -2,131 +2,131 @@
 {% load static %}
 {% block title %}View Cart{% endblock title %}
 {% block content %}
-<div class="container my-4 d-flex flex-column" style="min-height: 100vh;">
-  <div class="row flex-grow-1">
-    <!-- Left Section: Cart -->
-    <div class="col-lg-5 col-md-8">
-      <div class="cart-items">
-        {% if cart_items %}
-          {% for cart_item in cart_items %}
-            <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
-              <div class="d-flex wrap">
-                <!-- Food Item Image -->
-                <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" 
-                     style="width: 80px; height: 80px;" class="mr-3">
-              
-                <!-- Food Item Details -->
-                <div>
-                  <h4 class="food-name">{{ cart_item.food_item.food_name }}</h4>
-                  <p class="food-desc">{{ cart_item.food_item.description }}</p>
-                  <p class="resto-name"> By {{ cart_item.food_item.vendor.restaurant_name }}</p>
-                  <p><strong>Price:</strong> ₹<span class="food-price">{{ cart_item.food_item.price }}</span></p>
-    
-                  <!-- Form for Quantity Update -->
-                  <form method="POST" action="{% url 'update_cart' cart_item.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
-                    <div class="quantity-control d-flex align-items-center">
-                      <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
-                      <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1"
-                             class="mx-2 form-control food-quantity" style="width: 50px;">
-                      <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
-                    </div>
-                  </form>
-    
-                  <!-- Total Price for this item -->
-                  <p><strong>Amount:</strong> ₹<span class="food-total">{{ cart_item.total_price }}</span></p>
+<div class="container-fluid my-4">
+    <div class="row">
+      <!-- Left Section: Cart -->
+      <div class="col-lg-5 col-md-8">
+        <div class="cart-items">
+          {% if cart_items %}
+            {% for cart_item in cart_items %}
+              <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                <div class="d-flex wrap">
+                  <!-- Food Item Image -->
+                  <img src="{{ cart_item.food_item.image.url }}" alt="{{ cart_item.food_item.food_name }}" 
+                       style="width: 80px; height: 80px;" class="mr-3">
+                
+                  <!-- Food Item Details -->
+                  <div>
+                    <h4 class="food-name">{{ cart_item.food_item.food_name }}</h4>
+                    <p class="food-desc">{{ cart_item.food_item.description }}</p>
+                    <p class = "resto-name"> By {{ cart_item.food_item.vendor.restaurant_name }}
+                    </p>
+                    <p><strong>Price:</strong> ₹<span class="food-price">{{ cart_item.food_item.price }}</span></p>
+  
+                    <!-- Form for Quantity Update -->
+                    <form method="POST" action="{% url 'update_cart' cart_item.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
+                      <div class="quantity-control d-flex align-items-center">
+                        <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary">-</button>
+                        <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1"
+                               class="mx-2 form-control food-quantity" style="width: 50px;">
+                        <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">+</button>
+                      </div>
+                    </form>
+  
+                    <!-- Total Price for this item -->
+                    <p><strong>Amount:</strong> ₹<span class="food-total">{{ cart_item.total_price }}</span></p>
+                  </div>
                 </div>
-              </div>
-              
-              <!-- Delete & Order Buttons -->
-              <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
-                <form method="POST" action="{% url 'remove_from_cart' cart_item.id %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger w-100 w-md-auto"><i class="fa-solid fa-trash"></i></button>
-                </form>
-                <button type="button" class="btn btn-primary order-btn w-100 w-md-auto" data-cart-id="{{ cart_item.id }}">Order</button>
-              </div>
-            </div>                
-          {% endfor %}
-      </div>
-    </div>
-
-    <!-- Right Section: Payment Options -->
-    {% if cart_items %}
-    <div class="col-md-4">
-      <div class="payment-options" style="position: sticky; top: 20px; background-color: #f8f9fa; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
-        <h3>Payment Details</h3>
-        <div id="selected-items">
-          <p>No item selected yet.</p>
+                
+                
+                <!-- Delete & Order Buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+                  <form method="POST" action="{% url 'remove_from_cart' cart_item.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100 w-md-auto"><i class="fa-solid fa-trash"></i></button>
+                  </form>
+                  <button type="button" class="btn btn-primary order-btn w-100 w-md-auto" data-cart-id="{{ cart_item.id }}">Order</button>
+                </div>
+              </div>                
+            {% endfor %}
+          
+          
+      
         </div>
-        <h4>Total Amount: ₹<span id="total-amount">0</span></h4>
+      </div>
+  
+      <!-- Right Section: Payment Options -->
+      <div class="col-md-4">
+        <div class="payment-options" style="position: sticky; top: 20px; background-color: #f8f9fa; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+          <h3>Payment Details</h3>
+          <div id="selected-items">
+            <p>No item selected yet.</p>
+          </div>
+          <h4>Total Amount: ₹<span id="total-amount">0</span></h4>
+  
+          <p>Select a payment method:</p>
+          <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <input type="hidden" name="total_amount" value="{{ total_amount }}">
+            <input type="hidden" name="payment_method" id="payment_method_input">
+            <input type="hidden" name="selected_items" id="selected-items-input">
+            <input type="hidden" name="selected_item_ids" id="selected-item-ids" value="" />
 
-        <p>Select a payment method:</p>
-        <form method="POST" action="{% url 'place_order' %}">
-          {% csrf_token %}
-          <input type="hidden" name="total_amount" value="{{ total_amount }}">
-          <input type="hidden" name="payment_method" id="payment_method_input">
-          <input type="hidden" name="selected_items" id="selected-items-input">
-          <input type="hidden" name="selected_item_ids" id="selected-item-ids" value="" />
-
-           <!-- Cart Item Summary -->
-          <div class="cart-items-summary">
-              <!-- Cart item details will be appended here by JavaScript -->
+             <!-- Cart Item Summary -->
+            <div class="cart-items-summary">
+                <!-- Cart item details will be appended here by JavaScript -->
+            </div>
+        
+                
+            <!-- Payment Method Selection -->
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="payment_method" value="credit_card" id="credit_card">
+              <label class="form-check-label" for="credit_card">Credit Card</label>
+          </div>
+          <div class="form-check mb-2">
+              <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
+              <label class="form-check-label" for="paypal">PayPal</label>
           </div>
       
-          <!-- Payment Method Selection -->
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" name="payment_method" value="credit_card" id="credit_card">
-            <label class="form-check-label" for="credit_card">Credit Card</label>
-        </div>
-        <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" name="payment_method" value="paypal" id="paypal">
-            <label class="form-check-label" for="paypal">PayPal</label>
-        </div>
-    
-        <!-- Credit Card Details (Hidden by Default) -->
-        <div id="credit-card-details" style="display: none; margin-top: 10px;">
-            <label for="card_number">Card Number:</label>
-            <div class="input-group">
-                <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456">
-            </div>
-    
-            <div class="d-flex">
-                <div class="form-group mr-2" style="flex: 1;">
-                    <label for="expiry_date">Expiration Date:</label>
-                    <input type="text" name="expiry_date" class="form-control" placeholder="MM/YY">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label for="cvv">CVV:</label>
-                    <input type="text" name="cvv" class="form-control" placeholder="123">
-                </div>
-            </div>
-        </div>
-    
-        <button type="submit" class="btn btn-success mt-3 w-100">Proceed to Pay</button>
-    </form>
-    </div>
-    </div>
-    {% endif %}
-  {% else %}
-    <!-- Centered Empty Cart Section -->
-    <div class="empty-cart-container" style="flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
-      <div>
-        <img src="{% static 'images/empty-cart.jpg' %}" alt="Empty Cart" style="max-width: 300px; width: 100%;">
-        <h4 class="mt-3 text-danger">Your cart is empty!</h4>
-        <p class="text-muted">Looks like you haven’t added anything yet.</p>
-        <a href="{% url 'home' %}" class="btn btn-primary mt-2">
-          <i class="fa fa-arrow-left"></i> Browse Menu
-        </a>
+          <!-- Credit Card Details (Hidden by Default) -->
+          <div id="credit-card-details" style="display: none; margin-top: 10px;">
+              <label for="card_number">Card Number:</label>
+              <div class="input-group">
+                  <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456">
+              </div>
+      
+              <div class="d-flex">
+                  <div class="form-group mr-2" style="flex: 1;">
+                      <label for="expiry_date">Expiration Date:</label>
+                      <input type="text" name="expiry_date" class="form-control" placeholder="MM/YY">
+                  </div>
+                  <div class="form-group" style="flex: 1;">
+                      <label for="cvv">CVV:</label>
+                      <input type="text" name="cvv" class="form-control" placeholder="123">
+                  </div>
+              </div>
+          </div>
+      
+          <button type="submit" class="btn btn-success mt-3 w-100">Proceed to Pay</button>
+      </form>
+      {% else %}
+         
+          <div class="text-center p-5  ">
+            <img src="{% static 'images/empty-cart.jpg' %}" alt="Empty Cart" style="max-width: 300px; width: 100%;">
+            <h4 class="mt-3 text-danger">Your cart is empty!</h4>
+            <p class="text-muted">Looks like you haven’t added anything yet.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-2">
+              <i class="fa fa-arrow-left"></i> Browse Menu
+            </a>
+          </div>
+          {% endif %}
       </div>
     </div>
-  {% endif %}
+  </div>
 </div>
-
-
-
-
+  
   <!-- jQuery Script -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
