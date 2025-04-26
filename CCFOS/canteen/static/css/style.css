@@ -487,7 +487,7 @@ p {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
   margin-bottom: 10px;
-  width: 600px;
+  width: 100%;
   gap: 16px;
   
 }

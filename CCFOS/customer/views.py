@@ -733,11 +733,15 @@ def place_order(request):
                 order_list.append(new_order)
                 cart_item.delete()
 
-        order_details = "\n".join([
-            f"{order.food_item.food_name}(Qty: {order.quantity}) - ₹{order.price * order.quantity}"
-            for order in order_list
-        ])
-        total_final_amount = sum(order.total_amount for order in order_list)
+        # Assuming order_list contains all the orders, and each order has food_item, quantity, and price
+        order_details = "\n".join([f"{order.food_item.food_name}(Qty: {order.quantity}) - ₹{order.price * order.quantity}" for order in order_list])
+
+        # Calculate total amount dynamically for all items in the cart
+        total_final_amount = sum(order.price * order.quantity for order in order_list)
+
+        # Pass the updated total amount and order details to the template
+
+
 
         email_subject = "Your Order Confirmation"
         email_body = f"""Hello {customer.full_name},
