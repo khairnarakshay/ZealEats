@@ -186,9 +186,13 @@
                         <tr>
                             <th>Order ID</th>
                             <th>Customer</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
                             <th>Status</th>
-                            <th>ETA</th>
-                            <th>Actions</th>
+                            <th>Total</th>
+                            <th>Update Status</th>
+                         
+                            <th>Order Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,6 +200,10 @@
                             <tr>
                                 <td>{{ order.id }}</td>
                                 <td>{{ order.customer }}</td>
+                                <td>{{order.food_item }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <td class="text-success font-weight-bold">{{ order.order_status }}</td>
+                                <td>₹{{ order.total_amount }}</td>
                                 <td>
                                     <form method="POST" action="{% url 'update-order-status' order.id %}">
                                         {% csrf_token %}
@@ -212,6 +220,7 @@
                                     
                                     
                                 </td>
+                                <td>{{ order.updated_at}} </td>
                             </tr>
                         {% endfor %}
                     </tbody>

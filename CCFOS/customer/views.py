@@ -412,6 +412,7 @@ from .models import FoodItem  # Import your FoodItem model
 
 def add_to_cart(request, food_id):
     if not request.session.get('customer_id'):
+        messages.error(request, "You must need to login to view cart!")
         return redirect('customer_login')  # Redirect to login page if customer is not authenticated
     
     # Get the food item
@@ -481,7 +482,9 @@ from .models import Cart, CartItem
 
 def view_cart(request):
     customer_id = request.session.get('customer_id')
+    
     if not customer_id:
+        messages.error(request, "You must need to login to view cart!")
         return redirect('customer_login')
 
     customer = get_object_or_404(Customer, id=customer_id)

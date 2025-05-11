@@ -18,6 +18,8 @@ urlpatterns = [
     path('update-item/<int:id>/', views.update_items, name='update-item'),
     
     path("delete-item/<int:item_id>/", views.delete_item, name="delete-item"),
+    path('mark-out-of-stock/<int:item_id>/', views.mark_out_of_stock, name='mark-out-of-stock'),
+    path('mark-in-stock/<int:item_id>/', views.mark_in_stock, name='mark-in-stock'),
     path('account/', views.vendor_update_profile, name='account'),
     path('update-order-status/<int:order_id>/',views.update_order_status, name='update-order-status'),
    # path('admin/statistics/pdf/', views.generate_statistics_pdf, name='generate_statistics_pdf'),

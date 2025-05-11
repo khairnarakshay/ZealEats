@@ -8,7 +8,12 @@ from customer.models import Order
 from django.db.models import Sum, Count
 from django.utils.timezone import now, timedelta
 from datetime import datetime, timedelta
-
+import io
+import xlsxwriter
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 # def admin_logout(request):
 #     if request.user.is_authenticated and request.user.is_superuser:
@@ -205,6 +210,95 @@ from django.shortcuts import render
 from datetime import datetime, timedelta
 
 
+# def admin_statistics(request):
+#     vendor_id = request.session.get('vendor_id')
+#     today = datetime.now().date()
+
+#     # Fetch all completed orders for this vendor
+#     completed_orders = Order.objects.filter(order_status='Completed', vendor_id=vendor_id)
+
+#     # Get first order date
+#     first_order_date = completed_orders.aggregate(Min('order_date'))['order_date__min']
+#     first_order_date = first_order_date.date() if first_order_date else today
+
+#     # Date filter
+#     from_date_str = request.GET.get('from_date')
+#     to_date_str = request.GET.get('to_date')
+#     show_all = request.GET.get('show_all')
+    
+#     if show_all == '1':
+#         from_date = None
+#         to_date = None
+#     elif from_date_str and to_date_str:
+#         from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+#         to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+#     else:
+#         to_date = today
+#         from_date = today - timedelta(days=6)
+
+#     from_date = parse_date(from_date_str) if from_date_str else today - timedelta(days=6)  # Default last 7 days
+#     to_date = parse_date(to_date_str) if to_date_str else today
+
+#     # Line Chart Data (sales over time)
+#     delta = (to_date - from_date).days + 1
+#     line_labels = []
+#     line_data = []
+
+#     for i in range(delta):
+#         day = from_date + timedelta(days=i)
+#         total = completed_orders.filter(order_date__date=day).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+#         line_labels.append(day.strftime('%d %b'))
+#         line_data.append(float(total))
+
+#     # Bar Chart Data (top food items sold)
+#     bar_filtered_orders = completed_orders.filter(order_date__date__range=(from_date, to_date))
+#     food_stats = (
+#         bar_filtered_orders
+#         .values('food_item__food_name')
+#         .annotate(
+#             total_earned=Sum('total_amount'),
+#             total_quantity=Sum('quantity')
+#         )
+#         .order_by('-total_earned')
+#     )
+#     bar_labels = [item['food_item__food_name'] for item in food_stats]
+#     bar_data = [item['total_quantity'] for item in food_stats]
+
+#     # Summary stats
+#     daily_total = completed_orders.filter(order_date__date=today).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+#     weekly_total = completed_orders.filter(order_date__date__gte=today - timedelta(days=7)).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+#     monthly_total = completed_orders.filter(order_date__date__gte=today - timedelta(days=30)).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+#     total_collection = completed_orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+#     total_orders = completed_orders.count()
+
+#     today_orders = Order.objects.filter(order_date__date=today, vendor_id=vendor_id)
+#     today_completed_count = today_orders.filter(order_status='Completed').count()
+#     today_cancelled_count = today_orders.filter(order_status='Cancelled').count()
+#     today_total_count = today_orders.count()
+
+#     context = {
+#         'daily_total': daily_total,
+#         'weekly_total': weekly_total,
+#         'monthly_total': monthly_total,
+#         'total_collection': total_collection,
+#         'total_orders': total_orders,
+#         'today_total_count': today_total_count,
+#         'today_completed_count': today_completed_count,
+#         'today_cancelled_count': today_cancelled_count,
+#         'food_stats': food_stats,
+#         # Charts
+#         'graph_labels': line_labels,
+#         'graph_data': line_data,
+#         'food_labels': bar_labels,
+#         'food_data': bar_data,
+
+#         # Form values
+#         'from_date': from_date.strftime('%Y-%m-%d'),
+#         'to_date': to_date.strftime('%Y-%m-%d'),
+#     }
+
+#     return render(request, 'admin_statistics.html', context)
+
 def admin_statistics(request):
     vendor_id = request.session.get('vendor_id')
     today = datetime.now().date()
@@ -220,33 +314,59 @@ def admin_statistics(request):
     from_date_str = request.GET.get('from_date')
     to_date_str = request.GET.get('to_date')
     show_all = request.GET.get('show_all')
-    
+
+    # Handle date ranges and show_all logic
     if show_all == '1':
-        from_date = None
-        to_date = None
-    elif from_date_str and to_date_str:
-        from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
-        to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+        # Show all data by removing date filtering
+        completed_orders = Order.objects.filter(order_status='Completed', vendor_id=vendor_id)
+        from_date = None  # No date filtering
+        to_date = None    # No date filtering
     else:
-        to_date = today
-        from_date = today - timedelta(days=6)
+        if from_date_str and to_date_str:
+            from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+            to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+            completed_orders = Order.objects.filter(order_status='Completed', vendor_id=vendor_id, order_date__date__range=(from_date, to_date))
+        else:
+            to_date = today
+            from_date = today - timedelta(days=6)
+            completed_orders = Order.objects.filter(order_status='Completed', vendor_id=vendor_id, order_date__date__range=(from_date, to_date))
 
-    from_date = parse_date(from_date_str) if from_date_str else today - timedelta(days=6)  # Default last 7 days
-    to_date = parse_date(to_date_str) if to_date_str else today
+    # --- Line Chart Data (sales over time) ---
+    if show_all == '1':
+        # If "show_all" is selected, show the sales from the first order date to today
+        first_order_date = completed_orders.aggregate(Min('order_date'))['order_date__min']
+        first_order_date = first_order_date.date() if first_order_date else today
+        delta = (today - first_order_date).days + 1  # Days from the first order to today
+        line_labels = []
+        line_data = []
 
-    # Line Chart Data (sales over time)
-    delta = (to_date - from_date).days + 1
-    line_labels = []
-    line_data = []
+        for i in range(delta):
+            day = first_order_date + timedelta(days=i)
+            total = completed_orders.filter(order_date__date=day).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+            line_labels.append(day.strftime('%d %b'))
+            line_data.append(float(total))
+    else:
+        # If a date range is selected, show sales over the specified time period
+        delta = (to_date - from_date).days + 1
+        line_labels = []
+        line_data = []
 
-    for i in range(delta):
-        day = from_date + timedelta(days=i)
-        total = completed_orders.filter(order_date__date=day).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
-        line_labels.append(day.strftime('%d %b'))
-        line_data.append(float(total))
+        for i in range(delta):
+            day = from_date + timedelta(days=i)
+            total = completed_orders.filter(order_date__date=day).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+            line_labels.append(day.strftime('%d %b'))
+            line_data.append(float(total))
 
-    # Bar Chart Data (top food items sold)
-    bar_filtered_orders = completed_orders.filter(order_date__date__range=(from_date, to_date))
+    # --- Bar Chart Data (top food items sold) ---
+    # Get food item statistics (if show_all is selected, consider all data)
+    if show_all == '1':
+        # When 'show_all' is enabled, filter all completed orders without date restriction
+        bar_filtered_orders = completed_orders
+    else:
+        # Apply date range filtering if a date range is provided
+        bar_filtered_orders = completed_orders.filter(order_date__date__range=(from_date, to_date))
+
+    # Aggregate food item sales
     food_stats = (
         bar_filtered_orders
         .values('food_item__food_name')
@@ -254,12 +374,14 @@ def admin_statistics(request):
             total_earned=Sum('total_amount'),
             total_quantity=Sum('quantity')
         )
-        .order_by('-total_earned')
+        .order_by('-total_earned')  # Sort by total earnings (highest first)
     )
+
+    # Prepare data for the bar chart
     bar_labels = [item['food_item__food_name'] for item in food_stats]
     bar_data = [item['total_quantity'] for item in food_stats]
 
-    # Summary stats
+    # --- Summary stats ---
     daily_total = completed_orders.filter(order_date__date=today).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     weekly_total = completed_orders.filter(order_date__date__gte=today - timedelta(days=7)).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     monthly_total = completed_orders.filter(order_date__date__gte=today - timedelta(days=30)).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
@@ -271,6 +393,7 @@ def admin_statistics(request):
     today_cancelled_count = today_orders.filter(order_status='Cancelled').count()
     today_total_count = today_orders.count()
 
+    # --- Pass everything to the context ---
     context = {
         'daily_total': daily_total,
         'weekly_total': weekly_total,
@@ -287,12 +410,13 @@ def admin_statistics(request):
         'food_labels': bar_labels,
         'food_data': bar_data,
 
-        # Form values
-        'from_date': from_date.strftime('%Y-%m-%d'),
-        'to_date': to_date.strftime('%Y-%m-%d'),
+        # Form values for filtering
+        'from_date': from_date.strftime('%Y-%m-%d') if from_date else '',
+        'to_date': to_date.strftime('%Y-%m-%d') if to_date else '',
     }
 
     return render(request, 'admin_statistics.html', context)
+
 
     
 def vendor_logout(request):
@@ -435,6 +559,20 @@ def delete_item(request, item_id):
     item.delete()
     messages.success(request, "Food item deleted successfully.")
     return redirect("manage_items")
+
+
+
+def mark_out_of_stock(request, item_id):
+    item = get_object_or_404(FoodItem, id=item_id)
+    item.in_stock = False
+    item.save()
+    return redirect('manage_items')  
+
+def mark_in_stock(request, item_id):
+    item = get_object_or_404(FoodItem, id=item_id)
+    item.in_stock = True
+    item.save()
+    return redirect('manage_items')  
 # def order(request):
 #     return render(request, 'order.html')
 
@@ -590,7 +728,12 @@ def admin_statistics_offline(request):
     #today_completed_count = today_orders.filter(order_status='Completed').count()
     #today_cancelled_count = today_orders.filter(order_status='Cancelled').count()
     today_total_count = today_orders.count()
+    report_type = request.GET.get('report_type')  # Can be 'pdf' or 'excel'
 
+    if report_type == 'pdf':
+        return generate_pdf_report(from_date, to_date, completed_orders)
+    elif report_type == 'excel':
+        return generate_excel_report(from_date, to_date, completed_orders)
     context = {
         'daily_total': daily_total,
         'weekly_total': weekly_total,

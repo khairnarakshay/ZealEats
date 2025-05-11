@@ -162,8 +162,8 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-DEBUG =  False
+DEBUG =  True
 
-ALLOWED_HOSTS = ['khairnarakshay.pythonanywhere.com']
+#ALLOWED_HOSTS = ['khairnarakshay.pythonanywhere.com']
 
 #https://khairnarakshay.pythonanywhere.com/

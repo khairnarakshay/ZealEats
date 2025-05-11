@@ -44,7 +44,7 @@
                     <div class="mb-3">
                         <label class="form-label">Mobile Number</label>
                         <input type="text" class="form-control" name="mobile" placeholder="Enter Mobile Number"
-                               value="{{ request.POST.mobile|default:'' }}" required>
+                               value="{{ request.POST.mobile|default:'' }}" required maxlength="10" pattern="\d{10}">
                     </div>
                 
                     <div class="">

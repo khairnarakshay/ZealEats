@@ -16,7 +16,7 @@ admin.site.register(CanteenVendor, CanteeVendorAdmin)
 
 
 class FoodItemAdmin(admin.ModelAdmin):
-    list_display = ('id','get_vendor_name', 'food_name', 'description', 'food_type', 'category', 'price', 'image', 'created_at')
+    list_display = ('id','get_vendor_name', 'food_name', 'description', 'food_type', 'category', 'price', 'image', 'created_at','in_stock', 'average_rating')
 
     def get_vendor_name(self, obj):
         return obj.vendor.restaurant_name

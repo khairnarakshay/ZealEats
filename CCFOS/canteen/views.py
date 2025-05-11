@@ -18,7 +18,7 @@ from django.conf import settings
 #     # Pass both context variables in a single dictionary
 #     return render(request, 'home.html', {'food_items': food_items, 'customer_name': customer_name, 'context': context})
 def home(request):
-    food_items = FoodItem.objects.all()
+    food_items = FoodItem.objects.filter(in_stock=True)  # Fetch all food items that are in stock
     customer_name = request.session.get('customer_name', '')
     user_logged_in = request.session.get('user_id') is not None
 

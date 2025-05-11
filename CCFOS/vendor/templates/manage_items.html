@@ -23,23 +23,40 @@
                 <th class="py-2 px-2 md:px-4 text-left">Price</th>
                 <th class="py-2 px-2 md:px-4 text-left">Image</th>
                 <th class="py-2 px-2 md:px-4 text-left">Actions</th>
+                <th class="py-2 px-2 md:px-4 text-left">Status</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-300">
             {% for item in food_items %}
             <tr class="hover:bg-gray-100">
                 <td class="py-2 px-2 md:px-4">{{ item.food_name }}</td>
-                <td class="py-2 px-2 md:px-4 hidden md:table-cell">{{ item.description }}</td>
+                <td class="py-2 px-2 md:px-4 hidden md:table-cell max-w-xs break-words">{{ item.description }}</td>
                 <td class="py-2 px-2 md:px-4">{{ item.food_type }}</td>
                 <td class="py-2 px-2 md:px-4">{{ item.category }}</td>
                 <td class="py-2 px-2 md:px-4 font-semibold text-green-600">₹{{ item.price }}</td>
                 <td class="py-2 px-2 md:px-4">
                     <img src="{{ item.image.url }}" alt="Food Image" class="w-12 h-12 rounded-md shadow-sm object-cover">
                 </td>
-                <td class="py-2 px-2 md:px-4 flex flex-wrap gap-2">
+                <td class="py-2 px-2 md:px-4 flex evenly space-x-2" >
                     <a href="{% url 'update-item' item.id %}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm">Update</a>
                     <a href="{% url 'delete-item' item.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm" onclick="return confirm('Are you sure?')">Delete</a>
                 </td>
+            
+                <td class="py-2 px-2 md:px-4">
+                    {% if item.in_stock %}
+                        <a href="{% url 'mark-out-of-stock' item.id %}" 
+                           class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 text-sm inline-block whitespace-nowrap">
+                            Mark Out of Stock
+                        </a>
+                    {% else %}
+                        <a href="{% url 'mark-in-stock' item.id %}" 
+                           class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm inline-block whitespace-nowrap">
+                            Mark In Stock
+                        </a>
+                    {% endif %}
+                </td>
+                
+                   
             </tr>
             {% endfor %}
         </tbody>

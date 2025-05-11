@@ -28,7 +28,7 @@ class FoodItem(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     image = models.ImageField(upload_to='images/')  # Store in media folder
     created_at = models.DateTimeField(auto_now_add=True)
-
+    in_stock = models.BooleanField(default=True)  # Availability status
     # def __str__(self):
     #     return f"{self.food_name} - {self.vendor.restaurant_name}"
     @property

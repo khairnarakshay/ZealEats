@@ -47,7 +47,7 @@ class Order(models.Model):
         ('Pending', 'Pending'),
         ('Paid', 'Paid'),
         ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
+       # ('Shipped', 'Shipped'),
         ('Completed ', 'Completed'),
         ('Cancelled', 'Cancelled'),
     ]
